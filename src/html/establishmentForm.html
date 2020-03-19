@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<style>
+    input[type=text],
+    select {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    
+    input[type=submit] {
+        width: 100%;
+        background-color: #d54d7b;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    input[type=submit]:hover {
+        background-color: #4CAF50;
+    }
+    
+    textarea {
+        width: 100%;
+        height: 150px;
+        padding: 12px 20px;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: #f8f8f8;
+        resize: none;
+    }
+    
+    div {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+    }
+</style>
+
+<body>
+
+    <h3>Rellena el formulario para dar de alta un establecimiento</h3>
+
+    <div>
+        <form action="/action_page.php">
+            <label for="fname">Nombre del establecimiento *</label>
+            <input type="text" id="estName" name="estName" placeholder="nombre del establecimiento" required>
+
+            <label for="lname">Provincia *</label>
+            <input type="text" id="provincia" name="provincia" placeholder="Provincia" required>
+
+            <label for="lname">Municipio *</label>
+            <input type="text" id="municipio" name="municipio" placeholder="Municipio" required>
+
+            <label for="categoria">Categoría *</label>
+            <select id="categoria" name="categoria">
+      <option value="australia">Alimentación</option>
+      <option value="canada">Hostelería</option>
+      <option value="usa">Farmacias</option>
+      <option value="usa">Gasolineras</option>
+      <option value="usa">Estancos</option>      
+    </select>
+
+            <label for="direccion">Dirección *</label>
+            <input type="text" id="direccion" name="direccion" placeholder="calle, numero, ...." required>
+
+            <label for="horario">Horario *</label>
+            <input type="text" id="horario" name="horario" placeholder="Ejemplo: de 9:00 a 14:00" required>
+
+            <br><br>
+            <input type="checkbox" id="reparto" name="reparto" required>
+            <label for="reparto">Reparte a domicilio *</label><br><br>
+
+
+            <label for="email">Correo electrónico</label>
+            <input type="text" id="email" name="email" placeholder="correo electrónico">
+
+            <label for="comentarios">Comentarios de interés</label>
+            <textarea id="comentarios" name="comentarios" placeholder="Escribe algún comentario que consideres relevante"></textarea>
+
+            <input id="enviarBtn" type="submit" value="Enviar">
+            <input id="cancelBtn" type="submit" value="Volver">
+            <small for="enviarBtn">* La información enviada no será tratada ni compartida para otros fines.<br>La información enviada será publicada tras su revisión</small>
+
+        </form>
+    </div>
+
+</body>
+
+</html>

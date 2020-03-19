@@ -1,0 +1,113 @@
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    
+    .header {
+        /* background-color: #f1f1f1; */
+        /* padding: 14px 16px; */
+        text-align: center;
+    }
+    
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    /* Float four columns side by side */
+    
+    .column {
+        float: left;
+        width: 25%;
+        padding: 0 10px;
+    }
+    /* Remove extra left and right margins, due to padding */
+    
+    .row {
+        margin: 0 -5px;
+        margin-bottom: 10px;
+    }
+    /* Clear floats after the columns */
+    
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    /* Responsive columns */
+    
+    @media screen and (max-width: 600px) {
+        .column {
+            width: 100%;
+            display: block;
+            margin-bottom: 20px;
+        }
+    }
+    /* Style the counter cards */
+    
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        text-align: left;
+        background-color: #f1f1f1;
+    }
+    
+    .title {
+        color: #d54d7b;
+        font-size: 20px;
+        font-family: "Libre Baskerville", serif;
+        text-shadow: 0 1px 1px #fff;
+        font-weight: bold;
+        text-align: left;
+    }
+    
+    p {
+        color: #7a7c7f;
+        font-size: 14px;
+        font-family: "Libre Baskerville", serif;
+        text-shadow: 0 1px 1px #fff;
+        font-weight: bold;
+        text-align: left;
+    }
+    
+    input[type=submit] {
+        width: 100%;
+        background-color: #d54d7b;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    input[type=submit]:hover {
+        background-color: #4CAF50;
+    }
+    
+    .subtitle {
+        overflow: hidden;
+        background-color: #d54d7b;
+        padding: 14px 20px;
+        text-align: center;
+        color: rgb(248, 248, 252);
+        font-size: 17px;
+        font-family: "Libre Baskerville", serif;
+        text-shadow: 0 1px 1px rgb(95, 93, 93);
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+</style>
+</head>
+
+<body>
+
+
+
+    <div class="subtitle">
+        <label>Listado de establecimientos</label>
+    </div>
+
+
+    <div id="content"></div>
+    <!-- <input id="cancelBtn" type="submit" value="Volver"> -->
+
+</body>
