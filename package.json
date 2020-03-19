@@ -1,0 +1,19 @@
+{
+    "name": "gobuy",
+    "version": "1.0.0",
+    "description": "¡Vamos a comprar!. Plataforma que permite conocer el estado de aglomeración existente en un establecimiento.",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "parcel src/index.html -p 9000 --no-cache --no-source-maps",
+        "pro": "parcel build --public-url . src/index.html --no-cache --no-source-maps"
+    },
+    "browserslist": [
+        "last 1 Chrome versions"
+    ],
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "parcel-bundler": "^1.12.4"
+    }
+}
