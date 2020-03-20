@@ -21,7 +21,7 @@ class HomePage extends Page {
         const addButton = document.getElementById("addButton");
         addButton.onclick = () => {
             //establishmentFormPage.load();
-            var win = window.open('https://geowe.org/goBuy/goBuy-formulario-alta.html', '_blank');
+            var win = window.open('https://geowe.org/gobuy/goBuy-formulario-alta.html', '_blank');
             win.focus();
         }
     }
