@@ -14,9 +14,8 @@ class EstablishmentListPage extends Page {
         const data = await response.json();
 
         this._content.innerHTML = establishmentListHtml.trim();
-
-
         const content = document.getElementById("content");
+
         var row = ` <div class="row">`;
         var cont = 0;
         for (var establishment of data.records) {
@@ -36,20 +35,16 @@ class EstablishmentListPage extends Page {
         for (var establishment of data.records) {
             var id = establishment.ID_ESTABLECIMIENTO;
 
-            var enterButton = document.getElementById(`enter_${id}Btn`);
-            if (enterButton !== null) {
-                enterButton.onclick = this.onEnterClick;
-            }
+            this.registerButtonEvent(`enter_${id}Btn`, this.onEnterClick);
+            this.registerButtonEvent(`leave_${id}Btn`, this.onLeaveClick);
+            this.registerButtonEvent(`map_${id}Btn`, this.onMapClick);
+        }
+    }
 
-            var leaveButton = document.getElementById(`leave_${id}Btn`);
-            if (leaveButton !== null) {
-                leaveButton.onclick = this.onLeaveClick;
-            }
-
-            var mapButton = document.getElementById(`map_${id}Btn`);
-            if (mapButton !== null) {
-                mapButton.onclick = this.onMapClick;
-            }
+    registerButtonEvent(nameId, callback) {
+        var button = document.getElementById(nameId);
+        if (button !== null) {
+            button.onclick = callback;
         }
     }
 
