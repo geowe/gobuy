@@ -1,6 +1,6 @@
 import establishmentListHtml from '../html/establishmentList.html';
 import Page from './Page';
-const URL = 'https://geowe.org/goBuy/service/api.php/records/ESTABLECIMIENTOS';
+const URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS';
 const HOME_BUTTON = `<input id="cancelBtn" type="submit" value="Volver">`;
 
 class EstablishmentListPage extends Page {
