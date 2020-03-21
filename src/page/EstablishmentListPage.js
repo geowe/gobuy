@@ -13,13 +13,14 @@ class EstablishmentListPage extends Page {
 
         const response = await fetch(`${URL}filter=ID_MUNICIPIO,eq,${townId}&filter=ID_CATEGORIA,eq,${categoryId}`);
         const data = await response.json();
-
+        
         this._content.innerHTML = establishmentListHtml.trim();
         const content = document.getElementById("content");
 
         var row = ` <div class="row">`;
         var cont = 0;
-        for (var establishment of data.records) {
+        for (let establishment of data.records) {
+            
             row = row + this.getEstablishmentCard(establishment);
             cont++;
             if (cont === 4) {
@@ -33,7 +34,7 @@ class EstablishmentListPage extends Page {
         content.innerHTML = content.innerHTML + HOME_BUTTON;
         this.toHomeButton();
 
-        for (var establishment of data.records) {
+        for (let establishment of data.records) {
             var id = establishment.ID_ESTABLECIMIENTO;
 
             this.registerButtonEvent(`enter_${id}Btn`, this.onEnterClick);
@@ -66,11 +67,12 @@ class EstablishmentListPage extends Page {
         let establishmentId = establishment.ID_ESTABLECIMIENTO;
         let coords = establishment.COORDENADAS;
         let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" data-id="${establishmentId}" data-coordinates="${coords}" style="padding:10px 5px;width:50px; ">`;
+        let phonesLink = this.getPhonesLink(establishment.TELEFONO);
         return `<div class="column">
                 <div class="card">
                     <label class="title">${establishment.NOMBRE}</label>
                     <h4>${establishment.DIRECCION}</h4>
-                    <p>Tfno.: ${establishment.TELEFONO}</p>
+                    <p>Tfno.: ${phonesLink}</p>
                     <p>Horario: ${establishment.HORARIO}</p> 
                     <p>Contacto: ${establishment.CONTACTO}</p>
                     <p>Reparto: ${reparto}</p>
@@ -82,6 +84,16 @@ class EstablishmentListPage extends Page {
                     ${mapButton}
                 </div>
             </div>`;
+    }
+
+    getPhonesLink(phones){
+        let phonesLink = '';
+        let phonesSplited = phones.split("-");
+        for (let phone of phonesSplited){
+            let link = `<a href="tel:${phone}">${phone}</a>`;            
+            phonesLink = phonesLink.concat('|'+link+'|');
+        }
+        return phonesLink;
     }
 }
 
