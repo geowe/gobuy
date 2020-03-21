@@ -1,6 +1,7 @@
 import establishmentListHtml from '../html/establishmentList.html';
 import Page from './Page';
-const URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS';
+const URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
+
 const HOME_BUTTON = `<input id="cancelBtn" type="submit" value="Volver">`;
 
 class EstablishmentListPage extends Page {
@@ -8,9 +9,9 @@ class EstablishmentListPage extends Page {
         super()
     }
 
-    async load() {
+    async load(townId, categoryId) {
 
-        const response = await fetch(URL);
+        const response = await fetch(`${URL}filter=ID_MUNICIPIO,eq,${townId}&filter=ID_CATEGORIA,eq,${categoryId}`);
         const data = await response.json();
 
         this._content.innerHTML = establishmentListHtml.trim();
