@@ -20,9 +20,9 @@ class EstablishmentListPage extends Page {
         var row = ` <div class="row">`;
         var cont = 0;
         for (let establishment of data.records) {
-            
+                
             row = row + this.getEstablishmentCard(establishment);
-            cont++;
+            cont++;            
             if (cont === 4) {
                 row = row + "</div>";
                 content.innerHTML = content.innerHTML + row;
@@ -30,6 +30,8 @@ class EstablishmentListPage extends Page {
                 row = ` <div class="row">`;
             }
         }
+        row = row + "</div>";
+        content.innerHTML = content.innerHTML + row;
 
         content.innerHTML = content.innerHTML + HOME_BUTTON;
         this.toHomeButton();
@@ -88,10 +90,12 @@ class EstablishmentListPage extends Page {
 
     getPhonesLink(phones){
         let phonesLink = '';
-        let phonesSplited = phones.split("-");
-        for (let phone of phonesSplited){
-            let link = `<a href="tel:${phone}">${phone}</a>`;            
-            phonesLink = phonesLink.concat('|'+link+'|');
+        if(phones !== null){            
+            let phonesSplited = phones.split("-");
+            for (let phone of phonesSplited){
+                let link = `<a href="tel:${phone}">${phone}</a>`;            
+                phonesLink = phonesLink.concat('|'+link+'|');
+            }
         }
         return phonesLink;
     }
