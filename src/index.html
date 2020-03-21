@@ -6,9 +6,34 @@
     <title>GoBuy - Vamos a comprar!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="https://www.geowe.org/images/icons/logo.png" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        .center-loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform: -webkit-translate(-50%, -50%);
+            transform: -moz-translate(-50%, -50%);
+            transform: -ms-translate(-50%, -50%);
+            text-align: center;
+            color: #7a7c7f;
+            font-size: 24px;
+            font-family: "Libre Baskerville", serif;
+            text-shadow: 0 1px 1px #fff;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
+    <div id="loader-page" class="center-loader">
+        <img src="img/goBuy.png" style="max-width:100%;height:auto;">
+        <br>
+        <i class=" fas fa-cog fa-spin"></i> Cargando
+    </div>
+
     <div id="content"></div>
     <script src="./index.js "></script>
 </body>
