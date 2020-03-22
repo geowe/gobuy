@@ -15,14 +15,24 @@ class HomePage extends Page {
     async load() {
         const townData = await this.getDataFromURL(TOWN_URL);
         document.getElementById('loader-page').style.display = 'none';
+
         this._content.innerHTML = homeHtml.trim();
 
         this.completeCombo("municipiosSelect", townData, 'NOMBRE', 'ID_MUNICIPIO', this.onTownSelected.bind(this));
 
         const searchButton = document.getElementById("searchButton");
-        searchButton.onclick = () => {
+        searchButton.onclick = async() => {
             this.showLoader(true);
-            establishmentListPage.load(this.getOptionSelected("municipiosSelect"), this.getOptionSelected("categoriasSelect"));
+            const townSelected = this.getOptionSelected("municipiosSelect");
+            const categorySelected = this.getOptionSelected("categoriasSelect");
+
+            const data = await establishmentListPage.getData(townSelected, categorySelected);
+            this.showLoader(false);
+
+            if (data.records.length === 0)
+                alert(`No se han encontrado establecimientos para ${categorySelected.text} . Pruebe con otra categoría`);
+            else
+                establishmentListPage.load(data);
         }
 
         const addButton = document.getElementById("addButton");
@@ -65,15 +75,14 @@ class HomePage extends Page {
 
     getOptionSelected(comboName) {
         const combo = document.getElementById(comboName);
-        return combo.options[combo.selectedIndex].value;
+
+        return {
+            text: combo.options[combo.selectedIndex].text,
+            value: combo.options[combo.selectedIndex].value
+        };
     }
 
-    showLoader(status) {
-        const loader = document.getElementById('loader');
-        loader.style.display = 'none';
-        if (status)
-            loader.style.display = 'block';
-    }
+
 }
 
 export default new HomePage();

@@ -1,23 +1,34 @@
 import establishmentListHtml from '../html/establishmentList.html';
 import Page from './Page';
-const URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
+const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
 const incrementURL = 'http://geowe.org/gobuy/service/inc_counter.php?';
 const decrementURL = 'http://geowe.org/gobuy/service/dec_counter.php?';
 
-const HOME_BUTTON = `<input id="cancelBtn" type="submit" value="Volver">`;
+const HOME_BUTTON = ` <div  id="loader" style="display:none">
+<i  class="fas fa-cog fa-spin"></i>
+</div><input id="cancelBtn" type="submit" value="Volver">`;
+
+
+
+//<i id="loader" style="display:block" class="fas fa-cog fa-spin"></i>
 
 class EstablishmentListPage extends Page {
     constructor() {
         super()
     }
 
-    async load(townId, categoryId) {
+    async getData(town, category) {
+        this._town = town;
+        this._category = category;
+        const response = await fetch(`${ESTABLISHMENT_URL}filter=ID_MUNICIPIO,eq,${town.value}&filter=ID_CATEGORIA,eq,${category.value}`);
+        return await response.json();
+    }
 
-        const response = await fetch(`${URL}filter=ID_MUNICIPIO,eq,${townId}&filter=ID_CATEGORIA,eq,${categoryId}`);
-        const data = await response.json();
-
+    load(data) {
         this._content.innerHTML = establishmentListHtml.trim();
-        const content = document.getElementById("content");
+        const title = document.getElementById("title");
+        title.innerHTML = `${this._town.text}/${this._category.text} ${data.records.length} establecimientos`;
+        const cardList = document.getElementById("card-list");
 
         var row = ` <div class="row">`;
         var cont = 0;
@@ -27,15 +38,15 @@ class EstablishmentListPage extends Page {
             cont++;
             if (cont === 4) {
                 row = row + "</div>";
-                content.innerHTML = content.innerHTML + row;
+                cardList.innerHTML = cardList.innerHTML + row;
                 cont = 0;
                 row = ` <div class="row">`;
             }
         }
         row = row + "</div>";
-        content.innerHTML = content.innerHTML + row;
+        cardList.innerHTML = cardList.innerHTML + row;
 
-        content.innerHTML = content.innerHTML + HOME_BUTTON;
+        cardList.innerHTML = cardList.innerHTML + HOME_BUTTON;
         this.toHomeButton();
 
         for (let establishment of data.records) {
@@ -43,7 +54,8 @@ class EstablishmentListPage extends Page {
 
             this.registerButtonEvent(`enter_${id}Btn`, () => { this.onEnterClick(id); });
             this.registerButtonEvent(`leave_${id}Btn`, () => { this.onLeaveClick(id); });
-            this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(id); });
+            // this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(id); });
+            this.registerButtonEvent(`map_${id}Btn`, this.onMapClick);
         }
     }
 
@@ -76,6 +88,22 @@ class EstablishmentListPage extends Page {
         // alert("Map del establecimiento con id: " + this.getAttribute("data-id") + " coordenadas " + this.getAttribute("data-coordinates"));
 
         alert("En desarrollo");
+
+        // alert(this.getAttribute("data-coordinates"))
+        // var modal = document.getElementById("myModal");
+        // modal.style.display = "block";
+        // var map = new ol.Map({
+        //     target: 'map',
+        //     layers: [
+        //         new ol.layer.Tile({
+        //             source: new ol.source.OSM()
+        //         })
+        //     ],
+        //     view: new ol.View({
+        //         center: ol.proj.fromLonLat([-4.6991864239218994, 37.64624821092879]),
+        //         zoom: 20
+        //     })
+        // });
     }
 
     getEstablishmentCard(establishment) {
