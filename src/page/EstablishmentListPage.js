@@ -1,5 +1,7 @@
 import establishmentListHtml from '../html/establishmentList.html';
 import Page from './Page';
+import mapViewer from '../map/MapViewer';
+
 const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
 const incrementURL = 'http://geowe.org/gobuy/service/inc_counter.php?';
 const decrementURL = 'http://geowe.org/gobuy/service/dec_counter.php?';
@@ -7,10 +9,6 @@ const decrementURL = 'http://geowe.org/gobuy/service/dec_counter.php?';
 const HOME_BUTTON = ` <div  id="loader" style="display:none">
 <i  class="fas fa-cog fa-spin"></i>
 </div><input id="cancelBtn" type="submit" value="Volver">`;
-
-
-
-//<i id="loader" style="display:block" class="fas fa-cog fa-spin"></i>
 
 class EstablishmentListPage extends Page {
     constructor() {
@@ -49,13 +47,12 @@ class EstablishmentListPage extends Page {
         cardList.innerHTML = cardList.innerHTML + HOME_BUTTON;
         this.toHomeButton();
 
-        for (let establishment of data.records) {
+        for (var establishment of data.records) {
             var id = establishment.ID_ESTABLECIMIENTO;
-
+            const obj = { establishment: establishment };
             this.registerButtonEvent(`enter_${id}Btn`, () => { this.onEnterClick(id); });
             this.registerButtonEvent(`leave_${id}Btn`, () => { this.onLeaveClick(id); });
-            // this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(id); });
-            this.registerButtonEvent(`map_${id}Btn`, this.onMapClick);
+            this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(obj); });
         }
     }
 
@@ -84,33 +81,19 @@ class EstablishmentListPage extends Page {
         alert("En desarrollo");
     }
 
-    onMapClick(id) {
-        // alert("Map del establecimiento con id: " + this.getAttribute("data-id") + " coordenadas " + this.getAttribute("data-coordinates"));
+    onMapClick(obj) {
+        var establishment = obj.establishment;
+        var infoMap = document.getElementById("infoMap");
+        infoMap.innerHTML = `${this._town.text} / ${this._category.text} / ${establishment.NOMBRE}`;
 
-        alert("En desarrollo");
-
-        // alert(this.getAttribute("data-coordinates"))
-        // var modal = document.getElementById("myModal");
-        // modal.style.display = "block";
-        // var map = new ol.Map({
-        //     target: 'map',
-        //     layers: [
-        //         new ol.layer.Tile({
-        //             source: new ol.source.OSM()
-        //         })
-        //     ],
-        //     view: new ol.View({
-        //         center: ol.proj.fromLonLat([-4.6991864239218994, 37.64624821092879]),
-        //         zoom: 20
-        //     })
-        // });
+        mapViewer.loadMap(establishment);
     }
 
     getEstablishmentCard(establishment) {
         let reparto = establishment.REPARTO ? 'Si' : 'No';
         let establishmentId = establishment.ID_ESTABLECIMIENTO;
         let coords = establishment.COORDENADAS;
-        let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" data-id="${establishmentId}" data-coordinates="${coords}" style="padding:10px 5px;width:50px; ">`;
+        let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" style="padding:10px 5px;width:50px; ">`;
         let phonesLink = this.getPhonesLink(establishment.TELEFONO);
         return `<div class="column">
                 <div class="card">
@@ -141,6 +124,7 @@ class EstablishmentListPage extends Page {
         }
         return phonesLink;
     }
+
 }
 
 export default new EstablishmentListPage();

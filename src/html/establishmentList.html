@@ -1,5 +1,5 @@
 <head>
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/css/ol.css" type="text/css"> -->
+
     <style>
         * {
             box-sizing: border-box;
@@ -13,6 +13,7 @@
         
         body {
             font-family: Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
         }
         /* Float four columns side by side */
         
@@ -106,7 +107,7 @@
             /* Stay in place */
             z-index: 1;
             /* Sit on top */
-            padding-top: 100px;
+            padding-top: 50px;
             /* Location of the box */
             left: 0;
             top: 0;
@@ -150,10 +151,15 @@
             height: 400px;
             width: 100%;
         }
+        
+        .popover-content {
+            background-color: #d54d7b;
+            color: #FFFFFF;
+            padding: 25px;
+            width: 250px;
+        }
     </style>
 </head>
-
-<!-- <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/build/ol.js"></script> -->
 
 <body>
 
@@ -166,13 +172,15 @@
 
     <div id="card-list"></div>
 
-    <div id="myModal" class="modal">
+    <div id="mapModal" class="modal">
 
         <!-- Modal content -->
         <div class="modal-content">
             <span class="close">&times;</span>
-            <p>Some text in the Modal..</p>
-            <div id="map" class="map"></div>
+            <p id="infoMap">Some text in the Modal..</p>
+            <div id="map" class="map">
+                <div id="popup"></div>
+            </div>
         </div>
 
     </div>
