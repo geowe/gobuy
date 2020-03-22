@@ -1,47 +1,58 @@
 import establishmentListHtml from '../html/establishmentList.html';
 import Page from './Page';
-const URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
+import mapViewer from '../map/MapViewer';
 
-const HOME_BUTTON = `<input id="cancelBtn" type="submit" value="Volver">`;
+const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
+const incrementURL = 'http://geowe.org/gobuy/service/inc_counter.php?';
+const decrementURL = 'http://geowe.org/gobuy/service/dec_counter.php?';
+
+const HOME_BUTTON = ` <div  id="loader" style="display:none">
+<i  class="fas fa-cog fa-spin"></i>
+</div><input id="cancelBtn" type="submit" value="Volver">`;
 
 class EstablishmentListPage extends Page {
     constructor() {
         super()
     }
 
-    async load(townId, categoryId) {
+    async getData(town, category) {
+        this._town = town;
+        this._category = category;
+        const response = await fetch(`${ESTABLISHMENT_URL}filter=ID_MUNICIPIO,eq,${town.value}&filter=ID_CATEGORIA,eq,${category.value}`);
+        return await response.json();
+    }
 
-        const response = await fetch(`${URL}filter=ID_MUNICIPIO,eq,${townId}&filter=ID_CATEGORIA,eq,${categoryId}`);
-        const data = await response.json();
-        
+    load(data) {
         this._content.innerHTML = establishmentListHtml.trim();
-        const content = document.getElementById("content");
+        const title = document.getElementById("title");
+        title.innerHTML = `${this._town.text}/${this._category.text} ${data.records.length} establecimientos`;
+        const cardList = document.getElementById("card-list");
 
         var row = ` <div class="row">`;
         var cont = 0;
         for (let establishment of data.records) {
-                
+
             row = row + this.getEstablishmentCard(establishment);
-            cont++;            
+            cont++;
             if (cont === 4) {
                 row = row + "</div>";
-                content.innerHTML = content.innerHTML + row;
+                cardList.innerHTML = cardList.innerHTML + row;
                 cont = 0;
                 row = ` <div class="row">`;
             }
         }
         row = row + "</div>";
-        content.innerHTML = content.innerHTML + row;
+        cardList.innerHTML = cardList.innerHTML + row;
 
-        content.innerHTML = content.innerHTML + HOME_BUTTON;
+        cardList.innerHTML = cardList.innerHTML + HOME_BUTTON;
         this.toHomeButton();
 
-        for (let establishment of data.records) {
+        for (var establishment of data.records) {
             var id = establishment.ID_ESTABLECIMIENTO;
-
-            this.registerButtonEvent(`enter_${id}Btn`, this.onEnterClick);
-            this.registerButtonEvent(`leave_${id}Btn`, this.onLeaveClick);
-            this.registerButtonEvent(`map_${id}Btn`, this.onMapClick);
+            const obj = { establishment: establishment };
+            this.registerButtonEvent(`enter_${id}Btn`, () => { this.onEnterClick(id); });
+            this.registerButtonEvent(`leave_${id}Btn`, () => { this.onLeaveClick(id); });
+            this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(obj); });
         }
     }
 
@@ -52,23 +63,37 @@ class EstablishmentListPage extends Page {
         }
     }
 
-    onEnterClick() {
-        alert("Entramos en el establecimiento con id: " + this.getAttribute("data-id"));
+    onEnterClick(id) {
+        // fetch(`${incrementURL}id=${id}&counter=CONTADOR_CLIENTES_ACTUALES`).
+        // then((response) => {}).
+        // catch((exception) => { alert("Error al incrementar")}) ;
+        // alert("Entramos en el establecimiento con id: " + this.getAttribute("data-id"));
+
+        alert("En desarrollo");
     }
 
-    onLeaveClick() {
-        alert("Salimos del establecimiento con id: " + this.getAttribute("data-id"));
+    onLeaveClick(id) {
+        // fetch(`${decrementURL}id=${id}&counter=CONTADOR_CLIENTES_ACTUALES`).
+        // then((response) => {}).
+        // catch((exception) => { alert("Error al decrementar")}) ;
+        // alert("Salimos del establecimiento con id: " + this.getAttribute("data-id"));
+
+        alert("En desarrollo");
     }
 
-    onMapClick() {
-        alert("Map del establecimiento con id: " + this.getAttribute("data-id") + " coordenadas " + this.getAttribute("data-coordinates"));
+    onMapClick(obj) {
+        var establishment = obj.establishment;
+        var infoMap = document.getElementById("infoMap");
+        infoMap.innerHTML = `${this._town.text} / ${this._category.text} / ${establishment.NOMBRE}`;
+
+        mapViewer.loadMap(establishment);
     }
 
     getEstablishmentCard(establishment) {
         let reparto = establishment.REPARTO ? 'Si' : 'No';
         let establishmentId = establishment.ID_ESTABLECIMIENTO;
         let coords = establishment.COORDENADAS;
-        let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" data-id="${establishmentId}" data-coordinates="${coords}" style="padding:10px 5px;width:50px; ">`;
+        let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" style="padding:10px 5px;width:50px; ">`;
         let phonesLink = this.getPhonesLink(establishment.TELEFONO);
         return `<div class="column">
                 <div class="card">
@@ -88,17 +113,18 @@ class EstablishmentListPage extends Page {
             </div>`;
     }
 
-    getPhonesLink(phones){
+    getPhonesLink(phones) {
         let phonesLink = '';
-        if(phones !== null){            
+        if (phones !== null) {
             let phonesSplited = phones.split("-");
-            for (let phone of phonesSplited){
-                let link = `<a href="tel:${phone}">${phone}</a>`;            
-                phonesLink = phonesLink.concat('|'+link+'|');
+            for (let phone of phonesSplited) {
+                let link = `<a href="tel:${phone}">${phone}</a>`;
+                phonesLink = phonesLink.concat('|' + link + '|');
             }
         }
         return phonesLink;
     }
+
 }
 
 export default new EstablishmentListPage();
