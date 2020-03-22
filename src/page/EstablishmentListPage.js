@@ -95,13 +95,14 @@ class EstablishmentListPage extends Page {
         let coords = establishment.COORDENADAS;
         let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" style="padding:10px 5px;width:50px; ">`;
         let phonesLink = this.getPhonesLink(establishment.TELEFONO);
+        let contacto = establishment.CONTACTO === null ? '': establishment.CONTACTO;
         return `<div class="column">
                 <div class="card">
                     <label class="title">${establishment.NOMBRE}</label>
                     <h4>${establishment.DIRECCION}</h4>
-                    <p>Tfno.: ${phonesLink}</p>
-                    <p>Horario: ${establishment.HORARIO}</p> 
-                    <p>Contacto: ${establishment.CONTACTO}</p>
+                    <p><i class="fa fa-phone"></i> ${phonesLink}</p>
+                    <p><i class="far fa-clock"></i> ${establishment.HORARIO}</p> 
+                    <p>Contacto: ${contacto}</p>
                     <p>Reparto: ${reparto}</p>
                     <p>Clientes actuales: ${establishment.CONTADOR_CLIENTES_ACTUALES}</p>
                     <p>llegadas previstas: ${establishment.CONTADOR_LLEGADAS_PREVISTAS}</p>
