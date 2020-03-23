@@ -18,12 +18,12 @@ class MapViewer {
             featureProjection: 'EPSG:3857'
         });
 
-        feature.set("name", `<b>Nombre:</b> ${establishment.NOMBRE}`);
-        feature.set("address", `<b>Direc.:</b> ${establishment.DIRECCION}`);
-        feature.set("phone", `<b>Tfn.:</b> ${establishment.TELEFONO}`);
-        feature.set("hours", `<b>Horario:</b> ${establishment.HORARIO}`);
-        feature.set("contact", `<b>Contacto:</b> ${establishment.CONTACTO===null?"":establishment.CONTACTO}`);
-        feature.set("delivery", `<b>Reparto:</b> ${establishment.REPARTO ? 'Si' : 'No'}`);
+        feature.set("name", `<b>${establishment.NOMBRE}</b>`);
+        feature.set("address", `<i class="fas fa-location-arrow"></i> ${establishment.DIRECCION}`);
+        feature.set("phone", `<i class="fa fa-phone"></i> ${establishment.TELEFONO}`);
+        feature.set("hours", `<i class="far fa-clock"></i> ${establishment.HORARIO}`);
+        feature.set("contact", `<i class="far fa-user-circle"></i> ${establishment.CONTACTO===null?"":establishment.CONTACTO}`);
+        feature.set("delivery", `<i class="fas fa-truck"></i> ${establishment.REPARTO ? 'Si' : 'No'}`);
 
         if (!this._map) {
 

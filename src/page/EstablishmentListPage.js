@@ -93,22 +93,27 @@ class EstablishmentListPage extends Page {
         let reparto = establishment.REPARTO ? 'Si' : 'No';
         let establishmentId = establishment.ID_ESTABLECIMIENTO;
         let coords = establishment.COORDENADAS;
-        let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" style="padding:10px 5px;width:50px; ">`;
+        //let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" style="padding:10px 5px;width:50px; ">`;
+        let mapButton = coords === null ? '' : `<button id="map_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-map-marked-alt"></i></button>`;
         let phonesLink = this.getPhonesLink(establishment.TELEFONO);
-        let contacto = establishment.CONTACTO === null ? '': establishment.CONTACTO;
+        let contacto = establishment.CONTACTO === null ? '' : establishment.CONTACTO;
+
+
+        // <input id="leave_${establishmentId}Btn" type="submit" value="Salgo" data-id="${establishmentId}" style="padding:10px 5px;width:50px; ">
         return `<div class="column">
                 <div class="card">
                     <label class="title">${establishment.NOMBRE}</label>
-                    <h4>${establishment.DIRECCION}</h4>
+                    <p><i class="fas fa-location-arrow"></i> ${establishment.DIRECCION}</p>
                     <p><i class="fa fa-phone"></i> ${phonesLink}</p>
                     <p><i class="far fa-clock"></i> ${establishment.HORARIO}</p> 
-                    <p>Contacto: ${contacto}</p>
-                    <p>Reparto: ${reparto}</p>
-                    <p>Clientes actuales: ${establishment.CONTADOR_CLIENTES_ACTUALES}</p>
-                    <p>llegadas previstas: ${establishment.CONTADOR_LLEGADAS_PREVISTAS}</p>
-                    <hr>                    
-                    <input id="enter_${establishmentId}Btn" type="submit" value="Entro" data-id="${establishmentId}" style="padding:10px 5px;width:50px;">
-                    <input id="leave_${establishmentId}Btn" type="submit" value="Salgo" data-id="${establishmentId}" style="padding:10px 5px;width:50px; ">
+                    <p><i class="far fa-user-circle"></i> ${contacto}</p>
+                    <p><i class="fas fa-truck"></i> ${reparto}</p>
+                    <p><i class="fas fa-users"></i> [actuales] ${establishment.CONTADOR_CLIENTES_ACTUALES}</p>
+                    <p><i class="fas fa-walking"></i> [en camino] ${establishment.CONTADOR_LLEGADAS_PREVISTAS}</p>
+                    <hr>     
+                    <button id="walking_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-walking"></i></button>                                  
+                    <button id="enter_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-user-plus"></i></button>
+                    <button id="leave_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-user-minus"></i></button>                    
                     ${mapButton}
                 </div>
             </div>`;
