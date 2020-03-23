@@ -4,14 +4,17 @@
 
 body {
     margin: 0;
+    overflow-x: hidden;
 }
 
 a {
     color: #d54d7b;
 }
+
 a:hover {
     color: #0845c9;
 }
+
 
 /* Style the header */
 

@@ -1,23 +1,32 @@
 import establishmentListHtml from '../html/establishmentList.html';
 import Page from './Page';
-const URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
+import mapViewer from '../map/MapViewer';
+
+const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
 const incrementURL = 'http://geowe.org/gobuy/service/inc_counter.php?';
 const decrementURL = 'http://geowe.org/gobuy/service/dec_counter.php?';
 
-const HOME_BUTTON = `<input id="cancelBtn" type="submit" value="Volver">`;
+const HOME_BUTTON = ` <div  id="loader" style="display:none">
+<i  class="fas fa-cog fa-spin"></i>
+</div><input id="cancelBtn" type="submit" value="Volver">`;
 
 class EstablishmentListPage extends Page {
     constructor() {
         super()
     }
 
-    async load(townId, categoryId) {
+    async getData(town, category) {
+        this._town = town;
+        this._category = category;
+        const response = await fetch(`${ESTABLISHMENT_URL}filter=ID_MUNICIPIO,eq,${town.value}&filter=ID_CATEGORIA,eq,${category.value}`);
+        return await response.json();
+    }
 
-        const response = await fetch(`${URL}filter=ID_MUNICIPIO,eq,${townId}&filter=ID_CATEGORIA,eq,${categoryId}`);
-        const data = await response.json();
-
+    load(data) {
         this._content.innerHTML = establishmentListHtml.trim();
-        const content = document.getElementById("content");
+        const title = document.getElementById("title");
+        title.innerHTML = `${this._town.text}/${this._category.text} ${data.records.length} establecimientos`;
+        const cardList = document.getElementById("card-list");
 
         var row = ` <div class="row">`;
         var cont = 0;
@@ -27,23 +36,23 @@ class EstablishmentListPage extends Page {
             cont++;
             if (cont === 4) {
                 row = row + "</div>";
-                content.innerHTML = content.innerHTML + row;
+                cardList.innerHTML = cardList.innerHTML + row;
                 cont = 0;
                 row = ` <div class="row">`;
             }
         }
         row = row + "</div>";
-        content.innerHTML = content.innerHTML + row;
+        cardList.innerHTML = cardList.innerHTML + row;
 
-        content.innerHTML = content.innerHTML + HOME_BUTTON;
+        cardList.innerHTML = cardList.innerHTML + HOME_BUTTON;
         this.toHomeButton();
 
-        for (let establishment of data.records) {
+        for (var establishment of data.records) {
             var id = establishment.ID_ESTABLECIMIENTO;
-
+            const obj = { establishment: establishment };
             this.registerButtonEvent(`enter_${id}Btn`, () => { this.onEnterClick(id); });
             this.registerButtonEvent(`leave_${id}Btn`, () => { this.onLeaveClick(id); });
-            this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(id); });
+            this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(obj); });
         }
     }
 
@@ -72,25 +81,28 @@ class EstablishmentListPage extends Page {
         alert("En desarrollo");
     }
 
-    onMapClick(id) {
-        // alert("Map del establecimiento con id: " + this.getAttribute("data-id") + " coordenadas " + this.getAttribute("data-coordinates"));
+    onMapClick(obj) {
+        var establishment = obj.establishment;
+        var infoMap = document.getElementById("infoMap");
+        infoMap.innerHTML = `${this._town.text} / ${this._category.text} / ${establishment.NOMBRE}`;
 
-        alert("En desarrollo");
+        mapViewer.loadMap(establishment);
     }
 
     getEstablishmentCard(establishment) {
         let reparto = establishment.REPARTO ? 'Si' : 'No';
         let establishmentId = establishment.ID_ESTABLECIMIENTO;
         let coords = establishment.COORDENADAS;
-        let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" data-id="${establishmentId}" data-coordinates="${coords}" style="padding:10px 5px;width:50px; ">`;
+        let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" style="padding:10px 5px;width:50px; ">`;
         let phonesLink = this.getPhonesLink(establishment.TELEFONO);
+        let contacto = establishment.CONTACTO === null ? '': establishment.CONTACTO;
         return `<div class="column">
                 <div class="card">
                     <label class="title">${establishment.NOMBRE}</label>
                     <h4>${establishment.DIRECCION}</h4>
-                    <p>Tfno.: ${phonesLink}</p>
-                    <p>Horario: ${establishment.HORARIO}</p> 
-                    <p>Contacto: ${establishment.CONTACTO}</p>
+                    <p><i class="fa fa-phone"></i> ${phonesLink}</p>
+                    <p><i class="far fa-clock"></i> ${establishment.HORARIO}</p> 
+                    <p>Contacto: ${contacto}</p>
                     <p>Reparto: ${reparto}</p>
                     <p>Clientes actuales: ${establishment.CONTADOR_CLIENTES_ACTUALES}</p>
                     <p>llegadas previstas: ${establishment.CONTADOR_LLEGADAS_PREVISTAS}</p>
@@ -113,6 +125,7 @@ class EstablishmentListPage extends Page {
         }
         return phonesLink;
     }
+
 }
 
 export default new EstablishmentListPage();
