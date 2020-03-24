@@ -3,12 +3,12 @@ import Page from './Page';
 import mapViewer from '../map/MapViewer';
 import sessionContext from '../session/SessionContext';
 
-// const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
-// const incrementURL = 'http://geowe.org/gobuy/service/inc_counter.php?';
-// const decrementURL = 'http://geowe.org/gobuy/service/dec_counter.php?';
-const ESTABLISHMENT_URL = 'http://localhost/php-crud/api.php/records/establecimientos?';
-const incrementURL = 'http://localhost/php-crud/inc_counter.php?';
-const decrementURL = 'http://localhost/php-crud/dec_counter.php?';
+const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
+const incrementURL = 'https://geowe.org/gobuy/service/inc_counter.php?';
+const decrementURL = 'https://geowe.org/gobuy/service/dec_counter.php?';
+// const ESTABLISHMENT_URL = 'http://localhost/php-crud/api.php/records/establecimientos?';
+// const incrementURL = 'http://localhost/php-crud/inc_counter.php?';
+// const decrementURL = 'http://localhost/php-crud/dec_counter.php?';
 
 const HOME_BUTTON = ` <div  id="loader" style="display:none">
 <i  class="fas fa-cog fa-spin"></i>
