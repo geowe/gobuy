@@ -1,10 +1,14 @@
 import establishmentListHtml from '../html/establishmentList.html';
 import Page from './Page';
 import mapViewer from '../map/MapViewer';
+import sessionContext from '../session/SessionContext';
 
-const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
-const incrementURL = 'http://geowe.org/gobuy/service/inc_counter.php?';
-const decrementURL = 'http://geowe.org/gobuy/service/dec_counter.php?';
+// const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
+// const incrementURL = 'http://geowe.org/gobuy/service/inc_counter.php?';
+// const decrementURL = 'http://geowe.org/gobuy/service/dec_counter.php?';
+const ESTABLISHMENT_URL = 'http://localhost/php-crud/api.php/records/establecimientos?';
+const incrementURL = 'http://localhost/php-crud/inc_counter.php?';
+const decrementURL = 'http://localhost/php-crud/dec_counter.php?';
 
 const HOME_BUTTON = ` <div  id="loader" style="display:none">
 <i  class="fas fa-cog fa-spin"></i>
@@ -23,6 +27,8 @@ class EstablishmentListPage extends Page {
     }
 
     load(data) {
+        this.stablishments = {};
+
         this._content.innerHTML = establishmentListHtml.trim();
         const title = document.getElementById("title");
         title.innerHTML = `${this._town.text}/${this._category.text} ${data.records.length} establecimientos`;
@@ -49,36 +55,83 @@ class EstablishmentListPage extends Page {
 
         for (var establishment of data.records) {
             var id = establishment.ID_ESTABLECIMIENTO;
+            this.stablishments[id] = establishment;
+
             const obj = { establishment: establishment };
-            this.registerButtonEvent(`enter_${id}Btn`, () => { this.onEnterClick(id); });
-            this.registerButtonEvent(`leave_${id}Btn`, () => { this.onLeaveClick(id); });
+            this.registerButtonEvent(`walking_${id}Btn`, this.onOnTheWayClick.bind(this));
+            this.registerButtonEvent(`enter_${id}Btn`, this.onEnterClick.bind(this));
+            this.registerButtonEvent(`leave_${id}Btn`, this.onLeaveClick.bind(this));
             this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(obj); });
         }
     }
 
     registerButtonEvent(nameId, callback) {
         var button = document.getElementById(nameId);
+        var id = button.getAttribute("data-id");
+
         if (button !== null) {
-            button.onclick = callback;
+            button.onclick = () => { callback(id); };
         }
     }
 
-    onEnterClick(id) {
-        // fetch(`${incrementURL}id=${id}&counter=CONTADOR_CLIENTES_ACTUALES`).
-        // then((response) => {}).
-        // catch((exception) => { alert("Error al incrementar")}) ;
-        // alert("Entramos en el establecimiento con id: " + this.getAttribute("data-id"));
+    onOnTheWayClick(id) {
+        // const id = this.getAttribute("data-id");
 
-        alert("En desarrollo");
+        if (sessionContext.getOnTheWay() != undefined) {
+            alert("Usted ya se encuentra en camino al establecimiento " + this.stablishments[sessionContext.getOnTheWay()].NOMBRE);
+            return;
+        }
+        if (sessionContext.getEntering() != undefined) {
+            alert("Usted ya se encuentra dentro del establecimiento " + this.stablishments[sessionContext.getEntering()].NOMBRE);
+            return;
+        }
+
+        fetch(`${incrementURL}id=${id}&counter=CONTADOR_LLEGADAS_PREVISTAS`).
+            then((response) => {
+                sessionContext.setOnTheWay(id);
+                alert("Que tenga una buena compra!");
+            }).
+            catch((exception) => { alert("Error al incrementar") });
+    }
+
+    onEnterClick(id) {
+        // const id = this.getAttribute("data-id");
+
+        if (sessionContext.getOnTheWay() != undefined) {
+            let onTheWayId = sessionContext.getOnTheWay();
+
+            fetch(`${decrementURL}id=${onTheWayId}&counter=CONTADOR_LLEGADAS_PREVISTAS`).
+                then((response) => { }).
+                catch((exception) => { alert("Error al decrementar") });
+        }
+
+        if (sessionContext.getEntering() == undefined) {
+            fetch(`${incrementURL}id=${id}&counter=CONTADOR_CLIENTES_ACTUALES`).
+                then((response) => {
+                    sessionContext.setEntering(id);
+                    alert("Bienvenido al establecimiento!");
+                }).
+                catch((exception) => { alert("Error al incrementar") });
+        } else {
+            alert("Usted ya se encuentra dentro del establecimiento " + this.stablishments[sessionContext.getEntering()].NOMBRE);
+        }
     }
 
     onLeaveClick(id) {
-        // fetch(`${decrementURL}id=${id}&counter=CONTADOR_CLIENTES_ACTUALES`).
-        // then((response) => {}).
-        // catch((exception) => { alert("Error al decrementar")}) ;
-        // alert("Salimos del establecimiento con id: " + this.getAttribute("data-id"));
+        // const id = this.getAttribute("data-id");
 
-        alert("En desarrollo");
+        if (sessionContext.getEntering() == undefined) {
+            alert("Usted NO ha entrado a ningún establecimiento");
+        } else if (sessionContext.getEntering() != id) {
+            alert("Usted NO ha entrado a este establecimiento. Ha registrado la entrada en " + this.stablishments[sessionContext.getEntering()].NOMBRE);
+        } else {
+            fetch(`${decrementURL}id=${id}&counter=CONTADOR_CLIENTES_ACTUALES`).
+                then((response) => {
+                    sessionContext.clear();
+                    alert("Hasta la próxima!");
+                }).
+                catch((exception) => { alert("Error al decrementar") });
+        }
     }
 
     onMapClick(obj) {
