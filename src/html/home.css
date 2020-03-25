@@ -21,8 +21,8 @@ a:hover {
 .header {
     /* background-color: #f1f1f1; */
     /* padding: 14px 16px; */
-    /*margin-top: 1em;*/
-    text-align: left;
+    margin-top: 0.5em;
+    text-align: center;
 }
 
 .column {
