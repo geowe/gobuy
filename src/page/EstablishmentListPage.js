@@ -2,10 +2,10 @@ import establishmentListHtml from '../html/establishmentList.html';
 import Page from './Page';
 import mapViewer from '../map/MapViewer';
 import sessionContext from '../session/SessionContext';
-
+const proxy = 'https://geowe.org/proxy/proxy.php?url=';
 const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
-const incrementURL = 'https://geowe.org/gobuy/service/inc_counter.php?';
-const decrementURL = 'https://geowe.org/gobuy/service/dec_counter.php?';
+const incrementURL = proxy + 'https://geowe.org/gobuy/service/inc_counter.php?';
+const decrementURL = proxy + 'https://geowe.org/gobuy/service/dec_counter.php?';
 // const ESTABLISHMENT_URL = 'http://localhost/php-crud/api.php/records/establecimientos?';
 // const incrementURL = 'http://localhost/php-crud/inc_counter.php?';
 // const decrementURL = 'http://localhost/php-crud/dec_counter.php?';
@@ -87,11 +87,16 @@ class EstablishmentListPage extends Page {
         }
 
         fetch(`${incrementURL}id=${id}&counter=CONTADOR_LLEGADAS_PREVISTAS`).
-            then((response) => {
-                sessionContext.setOnTheWay(id);
-                alert("Que tenga una buena compra!");
-            }).
-            catch((exception) => { alert("Error al incrementar") });
+        then((response) => {
+            sessionContext.setOnTheWay(id);
+            this.setButtonStateChange(`walking_${id}Btn`, true);
+            alert("Que tenga una buena compra!. Avise cuando llegue.");
+            //document.getElementById(`walking_${id}Btn`).style['background-color'] = '#4CAF50';
+
+
+
+        }).
+        catch((exception) => { alert("Error al incrementar") });
     }
 
     onEnterClick(id) {
@@ -101,17 +106,20 @@ class EstablishmentListPage extends Page {
             let onTheWayId = sessionContext.getOnTheWay();
 
             fetch(`${decrementURL}id=${onTheWayId}&counter=CONTADOR_LLEGADAS_PREVISTAS`).
-                then((response) => { }).
-                catch((exception) => { alert("Error al decrementar") });
+            then((response) => {
+                this.setButtonStateChange(`walking_${id}Btn`, false);
+            }).
+            catch((exception) => { alert("Error al decrementar") });
         }
 
         if (sessionContext.getEntering() == undefined) {
             fetch(`${incrementURL}id=${id}&counter=CONTADOR_CLIENTES_ACTUALES`).
-                then((response) => {
-                    sessionContext.setEntering(id);
-                    alert("Bienvenido al establecimiento!");
-                }).
-                catch((exception) => { alert("Error al incrementar") });
+            then((response) => {
+                sessionContext.setEntering(id);
+                this.setButtonStateChange(`enter_${id}Btn`, true);
+                alert("Bienvenido al establecimiento!. Avise cuando salga.");
+            }).
+            catch((exception) => { alert("Error al incrementar") });
         } else {
             alert("Usted ya se encuentra dentro del establecimiento " + this.stablishments[sessionContext.getEntering()].NOMBRE);
         }
@@ -126,11 +134,12 @@ class EstablishmentListPage extends Page {
             alert("Usted NO ha entrado a este establecimiento. Ha registrado la entrada en " + this.stablishments[sessionContext.getEntering()].NOMBRE);
         } else {
             fetch(`${decrementURL}id=${id}&counter=CONTADOR_CLIENTES_ACTUALES`).
-                then((response) => {
-                    sessionContext.clear();
-                    alert("Hasta la próxima!");
-                }).
-                catch((exception) => { alert("Error al decrementar") });
+            then((response) => {
+                sessionContext.clear();
+                this.setButtonStateChange(`enter_${id}Btn`, false);
+                alert("Hasta la próxima!");
+            }).
+            catch((exception) => { alert("Error al decrementar") });
         }
     }
 
@@ -182,6 +191,16 @@ class EstablishmentListPage extends Page {
             }
         }
         return phonesLink;
+    }
+
+    setButtonStateChange(buttonName, pressed) {
+        const button = document.getElementById(buttonName);
+        button.style['color'] = 'white';
+
+        if (pressed)
+            button.style['background-color'] = '#4CAF50';
+        else
+            button.style['background-color'] = '#d54d7b';
     }
 
 }
