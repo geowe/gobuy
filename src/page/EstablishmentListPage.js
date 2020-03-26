@@ -4,6 +4,7 @@ import mapViewer from '../map/MapViewer';
 import sessionContext from '../session/SessionContext';
 const proxy = 'https://geowe.org/proxy/proxy.php?url=';
 const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
+const counterInfoURL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?include=ID_ESTABLECIMIENTO,CONTADOR_CLIENTES_ACTUALES,CONTADOR_LLEGADAS_PREVISTAS&';
 const incrementURL = proxy + 'https://geowe.org/gobuy/service/inc_counter.php?';
 const decrementURL = proxy + 'https://geowe.org/gobuy/service/dec_counter.php?';
 // const ESTABLISHMENT_URL = 'http://localhost/php-crud/api.php/records/establecimientos?';
@@ -24,6 +25,36 @@ class EstablishmentListPage extends Page {
         this._category = category;
         const response = await fetch(`${ESTABLISHMENT_URL}filter=ID_MUNICIPIO,eq,${town.value}&filter=ID_CATEGORIA,eq,${category.value}`);
         return await response.json();
+    }
+
+    async getCounterData() {
+        const response = await fetch(`${counterInfoURL}filter=ID_MUNICIPIO,eq,${this._town.value}&filter=ID_CATEGORIA,eq,${this._category.value}`);
+        return await response.json();
+    }
+
+    updateCounterData() {
+        //alert("actualiza")
+        // console.log("Actualizando contadores...");
+        this.showLoader(true);
+
+        this.getCounterData().
+        then((data) => {
+            for (let establishment of data.records) {
+                let establishmentId = establishment.ID_ESTABLECIMIENTO;
+
+                let walkingCounter = document.getElementById(`walking_${establishmentId}Count`);
+                let enterCounter = document.getElementById(`enter_${establishmentId}Count`);
+
+                walkingCounter.innerHTML = establishment.CONTADOR_LLEGADAS_PREVISTAS;
+                enterCounter.innerHTML = establishment.CONTADOR_CLIENTES_ACTUALES;
+            }
+        }).
+        catch((exception) => {
+            console.log(exception);
+        }).
+        finally(() => {
+            this.showLoader(false);
+        });
     }
 
     load(data) {
@@ -63,20 +94,26 @@ class EstablishmentListPage extends Page {
             this.registerButtonEvent(`leave_${id}Btn`, this.onLeaveClick.bind(this));
             this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(obj); });
         }
+
+        if (sessionContext.getOnTheWay() != undefined) {
+            this.setButtonStateChange(`walking_${sessionContext.getOnTheWay()}Btn`, true);
+        } else if (sessionContext.getEntering() != undefined) {
+            this.setButtonStateChange(`enter_${sessionContext.getEntering()}Btn`, true);
+        }
+
+        this.startRefreshInterval(this.updateCounterData.bind(this));
     }
 
     registerButtonEvent(nameId, callback) {
         var button = document.getElementById(nameId);
-        var id = button.getAttribute("data-id");
 
         if (button !== null) {
+            var id = button.getAttribute("data-id");
             button.onclick = () => { callback(id); };
         }
     }
 
     onOnTheWayClick(id) {
-        // const id = this.getAttribute("data-id");
-
         if (sessionContext.getOnTheWay() != undefined) {
             alert("Usted ya se encuentra en camino al establecimiento " + this.stablishments[sessionContext.getOnTheWay()].NOMBRE);
             return;
@@ -87,21 +124,18 @@ class EstablishmentListPage extends Page {
         }
 
         fetch(`${incrementURL}id=${id}&counter=CONTADOR_LLEGADAS_PREVISTAS`).
+            //fetch(url).
         then((response) => {
             sessionContext.setOnTheWay(id);
             this.setButtonStateChange(`walking_${id}Btn`, true);
             alert("Que tenga una buena compra!. Avise cuando llegue.");
             //document.getElementById(`walking_${id}Btn`).style['background-color'] = '#4CAF50';
-
-
-
+            this.updateCounterData();
         }).
         catch((exception) => { alert("Error al incrementar") });
     }
 
     onEnterClick(id) {
-        // const id = this.getAttribute("data-id");
-
         if (sessionContext.getOnTheWay() != undefined) {
             let onTheWayId = sessionContext.getOnTheWay();
 
@@ -109,7 +143,7 @@ class EstablishmentListPage extends Page {
             then((response) => {
                 this.setButtonStateChange(`walking_${id}Btn`, false);
             }).
-            catch((exception) => { alert("Error al decrementar") });
+            catch((exception) => { alert("Error al decrementar. " + exception.message) });
         }
 
         if (sessionContext.getEntering() == undefined) {
@@ -118,6 +152,7 @@ class EstablishmentListPage extends Page {
                 sessionContext.setEntering(id);
                 this.setButtonStateChange(`enter_${id}Btn`, true);
                 alert("Bienvenido al establecimiento!. Avise cuando salga.");
+                this.updateCounterData();
             }).
             catch((exception) => { alert("Error al incrementar") });
         } else {
@@ -126,8 +161,6 @@ class EstablishmentListPage extends Page {
     }
 
     onLeaveClick(id) {
-        // const id = this.getAttribute("data-id");
-
         if (sessionContext.getEntering() == undefined) {
             alert("Usted NO ha entrado a ningún establecimiento");
         } else if (sessionContext.getEntering() != id) {
@@ -138,6 +171,7 @@ class EstablishmentListPage extends Page {
                 sessionContext.clear();
                 this.setButtonStateChange(`enter_${id}Btn`, false);
                 alert("Hasta la próxima!");
+                this.updateCounterData();
             }).
             catch((exception) => { alert("Error al decrementar") });
         }
@@ -170,8 +204,8 @@ class EstablishmentListPage extends Page {
                     <p><i class="far fa-clock"></i> ${establishment.HORARIO}</p> 
                     <p><i class="far fa-user-circle"></i> ${contacto}</p>
                     <p><i class="fas fa-truck"></i> ${reparto}</p>
-                    <p><i class="fas fa-users"></i> [actuales] ${establishment.CONTADOR_CLIENTES_ACTUALES}</p>
-                    <p><i class="fas fa-walking"></i> [en camino] ${establishment.CONTADOR_LLEGADAS_PREVISTAS}</p>
+                    <p><i class="fas fa-users"></i> [actuales] <span id="enter_${establishmentId}Count">${establishment.CONTADOR_CLIENTES_ACTUALES}</span></p>
+                    <p><i class="fas fa-walking"></i> [en camino] <span id="walking_${establishmentId}Count">${establishment.CONTADOR_LLEGADAS_PREVISTAS}</span></p>
                     <hr>     
                     <button id="walking_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-walking"></i></button>                                  
                     <button id="enter_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-user-plus"></i></button>
