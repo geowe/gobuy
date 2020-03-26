@@ -5,8 +5,8 @@ import sessionContext from '../session/SessionContext';
 const proxy = 'https://geowe.org/proxy/proxy.php?url=';
 const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
 const counterInfoURL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?include=ID_ESTABLECIMIENTO,CONTADOR_CLIENTES_ACTUALES,CONTADOR_LLEGADAS_PREVISTAS&';
-const incrementURL = 'https://geowe.org/gobuy/service/inc_counter.php?';
-const decrementURL = 'https://geowe.org/gobuy/service/dec_counter.php?';
+const incrementURL = proxy + 'https://geowe.org/gobuy/service/inc_counter.php?';
+const decrementURL = proxy + 'https://geowe.org/gobuy/service/dec_counter.php?';
 // const ESTABLISHMENT_URL = 'http://localhost/php-crud/api.php/records/establecimientos?';
 // const incrementURL = 'http://localhost/php-crud/inc_counter.php?';
 // const decrementURL = 'http://localhost/php-crud/dec_counter.php?';
@@ -32,18 +32,19 @@ class EstablishmentListPage extends Page {
         return await response.json();
     }
 
-    updateCounterData() {     
-        console.log("Actualizando contadores...");
+    updateCounterData() {
+        //alert("actualiza")
+        // console.log("Actualizando contadores...");
         this.showLoader(true);
 
         this.getCounterData().
-        then((data) => {            
+        then((data) => {
             for (let establishment of data.records) {
                 let establishmentId = establishment.ID_ESTABLECIMIENTO;
-    
+
                 let walkingCounter = document.getElementById(`walking_${establishmentId}Count`);
                 let enterCounter = document.getElementById(`enter_${establishmentId}Count`);
-    
+
                 walkingCounter.innerHTML = establishment.CONTADOR_LLEGADAS_PREVISTAS;
                 enterCounter.innerHTML = establishment.CONTADOR_CLIENTES_ACTUALES;
             }
@@ -53,7 +54,7 @@ class EstablishmentListPage extends Page {
         }).
         finally(() => {
             this.showLoader(false);
-        });        
+        });
     }
 
     load(data) {
@@ -82,7 +83,7 @@ class EstablishmentListPage extends Page {
 
         cardList.innerHTML = cardList.innerHTML + HOME_BUTTON;
         this.toHomeButton();
-        
+
         for (var establishment of data.records) {
             var id = establishment.ID_ESTABLECIMIENTO;
             this.stablishments[id] = establishment;
@@ -94,12 +95,18 @@ class EstablishmentListPage extends Page {
             this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(obj); });
         }
 
-        setInterval(this.updateCounterData.bind(this), 10000);
+        if (sessionContext.getOnTheWay() != undefined) {
+            this.setButtonStateChange(`walking_${sessionContext.getOnTheWay()}Btn`, true);
+        } else if (sessionContext.getEntering() != undefined) {
+            this.setButtonStateChange(`enter_${sessionContext.getEntering()}Btn`, true);
+        }
+
+        this.startRefreshInterval(this.updateCounterData.bind(this));
     }
 
     registerButtonEvent(nameId, callback) {
         var button = document.getElementById(nameId);
-        
+
         if (button !== null) {
             var id = button.getAttribute("data-id");
             button.onclick = () => { callback(id); };
@@ -117,6 +124,7 @@ class EstablishmentListPage extends Page {
         }
 
         fetch(`${incrementURL}id=${id}&counter=CONTADOR_LLEGADAS_PREVISTAS`).
+            //fetch(url).
         then((response) => {
             sessionContext.setOnTheWay(id);
             this.setButtonStateChange(`walking_${id}Btn`, true);
@@ -135,7 +143,7 @@ class EstablishmentListPage extends Page {
             then((response) => {
                 this.setButtonStateChange(`walking_${id}Btn`, false);
             }).
-            catch((exception) => { alert("Error al decrementar") });
+            catch((exception) => { alert("Error al decrementar. " + exception.message) });
         }
 
         if (sessionContext.getEntering() == undefined) {
@@ -152,7 +160,7 @@ class EstablishmentListPage extends Page {
         }
     }
 
-    onLeaveClick(id) {        
+    onLeaveClick(id) {
         if (sessionContext.getEntering() == undefined) {
             alert("Usted NO ha entrado a ningún establecimiento");
         } else if (sessionContext.getEntering() != id) {
@@ -196,8 +204,8 @@ class EstablishmentListPage extends Page {
                     <p><i class="far fa-clock"></i> ${establishment.HORARIO}</p> 
                     <p><i class="far fa-user-circle"></i> ${contacto}</p>
                     <p><i class="fas fa-truck"></i> ${reparto}</p>
-                    <p><i class="fas fa-users"></i> [actuales] <span id="walking_${establishmentId}Count">${establishment.CONTADOR_CLIENTES_ACTUALES}</span></p>
-                    <p><i class="fas fa-walking"></i> [en camino] <span id="enter_${establishmentId}Count">${establishment.CONTADOR_LLEGADAS_PREVISTAS}</span></p>
+                    <p><i class="fas fa-users"></i> [actuales] <span id="enter_${establishmentId}Count">${establishment.CONTADOR_CLIENTES_ACTUALES}</span></p>
+                    <p><i class="fas fa-walking"></i> [en camino] <span id="walking_${establishmentId}Count">${establishment.CONTADOR_LLEGADAS_PREVISTAS}</span></p>
                     <hr>     
                     <button id="walking_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-walking"></i></button>                                  
                     <button id="enter_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-user-plus"></i></button>
