@@ -11,9 +11,11 @@ const decrementURL = proxy + 'https://geowe.org/gobuy/service/dec_counter.php?';
 // const incrementURL = 'http://localhost/php-crud/inc_counter.php?';
 // const decrementURL = 'http://localhost/php-crud/dec_counter.php?';
 
-const HOME_BUTTON = ` <div  id="loader" style="display:none">
-<i  class="fas fa-cog fa-spin"></i>
-</div><input id="cancelBtn" type="submit" value="Volver">`;
+// const HOME_BUTTON = ` <div  id="loader" style="display:none">
+// <i  class="fas fa-cog fa-spin"></i>
+// </div><input id="cancelBtn" type="submit" value="Volver">`;
+
+const HOME_BUTTON = `<input id="cancelBtn2" type="submit" value="Volver">`;
 
 class EstablishmentListPage extends Page {
     constructor() {
@@ -62,7 +64,7 @@ class EstablishmentListPage extends Page {
 
         this._content.innerHTML = establishmentListHtml.trim();
         const title = document.getElementById("title");
-        title.innerHTML = `${this._town.text}/${this._category.text} ${data.records.length} establecimientos`;
+        title.innerHTML = `${this._town.text} / ${this._category.text}: ${data.records.length} resultados `;
         const cardList = document.getElementById("card-list");
 
         var row = ` <div class="row">`;
@@ -81,7 +83,7 @@ class EstablishmentListPage extends Page {
         row = row + "</div>";
         cardList.innerHTML = cardList.innerHTML + row;
 
-        cardList.innerHTML = cardList.innerHTML + HOME_BUTTON;
+        // cardList.innerHTML = cardList.innerHTML + HOME_BUTTON;
         this.toHomeButton();
 
         for (var establishment of data.records) {
@@ -229,6 +231,8 @@ class EstablishmentListPage extends Page {
 
     setButtonStateChange(buttonName, pressed) {
         const button = document.getElementById(buttonName);
+        if (button == null) return;
+
         button.style['color'] = 'white';
 
         if (pressed)
