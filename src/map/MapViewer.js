@@ -89,10 +89,14 @@ class MapViewer {
         var closeButton = document.getElementsByClassName("close")[0];
 
         closeButton.onclick = () => {
-            $(element).popover('destroy');
             this._map.removeLayer(vectorLayer);
+            $(element).popover('destroy');
             mapModal.style.display = "none";
         }
+    }
+
+    clearMap() {
+        this._map = undefined;
     }
 }
 

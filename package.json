@@ -4,7 +4,7 @@
     "description": "¡Vamos a comprar!. Plataforma que permite conocer el estado de aglomeración existente en un establecimiento.",
     "main": "src/index.js",
     "scripts": {
-        "start": "parcel src/index.html -p 9000 --no-cache --no-source-maps",
+        "start": "parcel src/index.html -p 9000 --no-cache",
         "pro": "parcel build --public-url . src/index.html --no-cache --no-source-maps"
     },
     "browserslist": [

@@ -1,4 +1,5 @@
 import home from './HomePage';
+import mapViewer from '../map/MapViewer';
 
 const REFRESH_INTERVAL = 10000;
 
@@ -12,6 +13,7 @@ export default class Page {
         cancelButton.onclick = () => {
             this.showLoader(true);
             this.stopRefreshInterval();
+            mapViewer.clearMap();
             home.load();
         }
     }

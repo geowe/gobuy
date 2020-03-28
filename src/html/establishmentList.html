@@ -1,9 +1,48 @@
 <head>
 
     <style>
-        * {
-            box-sizing: border-box;
+        /******************************** NAVBAR *******************************/
+        
+        .navbar {
+            overflow: hidden;
+            background-color: #d54d7b;
+            position: fixed;
+            top: 0px;
+            width: 100%;
+            height: 50px;
+            z-index: 10;
         }
+        
+        .subnavbar {
+            overflow: hidden;
+            background-color: #080808;
+            position: fixed;
+            top: 50px;
+            width: 100%;
+            font-size: 10px;
+            height: 30px;
+            opacity: 0.8;
+            z-index: 10;
+        }
+        
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        
+        .navbar a:hover {
+            background: #4CAF50;
+            color: white;
+        }
+        /* ******************************************* */
+        /* * {
+            box-sizing: border-box;
+        } */
         
         .header {
             /* background-color: #f1f1f1; */
@@ -52,15 +91,14 @@
             text-align: left;
             background-color: #f1f1f1;
         }
-        
-        .title {
+        /* .title {
             color: #d54d7b;
             font-size: 20px;
             font-family: "Libre Baskerville", serif;
             text-shadow: 0 1px 1px #fff;
             font-weight: bold;
             text-align: left;
-        }
+        } */
         
         p {
             color: #7a7c7f;
@@ -69,21 +107,6 @@
             text-shadow: 0 1px 1px #fff;
             font-weight: bold;
             text-align: left;
-        }
-        
-        input[type=submit] {
-            width: 100%;
-            background-color: #d54d7b;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        input[type=submit]:hover {
-            background-color: #4CAF50;
         }
         
         .btn {
@@ -120,9 +143,9 @@
             /* Hidden by default */
             position: fixed;
             /* Stay in place */
-            z-index: 1;
+            z-index: 14;
             /* Sit on top */
-            padding-top: 50px;
+            padding-top: 30px;
             /* Location of the box */
             left: 0;
             top: 0;
@@ -178,14 +201,29 @@
 
 <body>
 
+    <div class="navbar">
+        <a href="#" id="cancelBtn"><i class="fas fa-arrow-left"></i></a>
+        <div style="float: right;padding-right: 5px;">
+            <img src="../img/logo-invertido-50.png">
+        </div>
+    </div>
+    <div class="subnavbar">
+        <div style="color:white;font-size:14px;float: left;padding-left: 10px;">
+            <label id="title">Comercios</label>
+        </div>
 
-
-    <div class="subtitle">
-        <label id="title">Listado de establecimientos</label>
+        <div id="loader" style="display:none; color:white;font-size:14px;float: left;padding-left: 10px;">
+            <i class="fas fa-cog fa-spin"></i>
+        </div>
     </div>
 
+    <!-- ************************************************************************************* -->
+    <!-- <div class="subtitle">
+        <label id="title">Listado de establecimientos</label>
+    </div> -->
 
-    <div id="card-list"></div>
+
+    <div id="card-list" style="position: relative;top:90px;z-index: 0"></div>
 
     <div id="mapModal" class="modal">
 
