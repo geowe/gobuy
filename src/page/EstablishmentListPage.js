@@ -83,7 +83,6 @@ class EstablishmentListPage extends Page {
         row = row + "</div>";
         cardList.innerHTML = cardList.innerHTML + row;
 
-        // cardList.innerHTML = cardList.innerHTML + HOME_BUTTON;
         this.toHomeButton();
 
         for (var establishment of data.records) {
