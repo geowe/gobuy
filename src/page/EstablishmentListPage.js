@@ -2,6 +2,7 @@ import establishmentListHtml from '../html/establishmentList.html';
 import Page from './Page';
 import mapViewer from '../map/MapViewer';
 import sessionContext from '../session/SessionContext';
+import searchTool from '../tool/SearchTool';
 const proxy = 'https://geowe.org/proxy/proxy.php?url=';
 const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?';
 const counterInfoURL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?include=ID_ESTABLECIMIENTO,CONTADOR_CLIENTES_ACTUALES,CONTADOR_LLEGADAS_PREVISTAS&';
@@ -10,12 +11,6 @@ const decrementURL = proxy + 'https://geowe.org/gobuy/service/dec_counter.php?';
 // const ESTABLISHMENT_URL = 'http://localhost/php-crud/api.php/records/establecimientos?';
 // const incrementURL = 'http://localhost/php-crud/inc_counter.php?';
 // const decrementURL = 'http://localhost/php-crud/dec_counter.php?';
-
-// const HOME_BUTTON = ` <div  id="loader" style="display:none">
-// <i  class="fas fa-cog fa-spin"></i>
-// </div><input id="cancelBtn" type="submit" value="Volver">`;
-
-const HOME_BUTTON = `<input id="cancelBtn2" type="submit" value="Volver">`;
 
 class EstablishmentListPage extends Page {
     constructor() {
@@ -47,8 +42,11 @@ class EstablishmentListPage extends Page {
                 let walkingCounter = document.getElementById(`walking_${establishmentId}Count`);
                 let enterCounter = document.getElementById(`enter_${establishmentId}Count`);
 
-                walkingCounter.innerHTML = establishment.CONTADOR_LLEGADAS_PREVISTAS;
-                enterCounter.innerHTML = establishment.CONTADOR_CLIENTES_ACTUALES;
+                if (walkingCounter)
+                    walkingCounter.innerHTML = establishment.CONTADOR_LLEGADAS_PREVISTAS;
+
+                if (enterCounter)
+                    enterCounter.innerHTML = establishment.CONTADOR_CLIENTES_ACTUALES;
             }
         }).
         catch((exception) => {
@@ -60,32 +58,53 @@ class EstablishmentListPage extends Page {
     }
 
     load(data) {
-        this.stablishments = {};
-
+        this._data = data;
         this._content.innerHTML = establishmentListHtml.trim();
-        const title = document.getElementById("title");
-        title.innerHTML = `${this._town.text} / ${this._category.text}: ${data.records.length} resultados `;
+        this.toHomeButton();
+        searchTool.load(this);
+        this._cardOriginalLoad = this.createCardList();
+        this.startRefreshInterval(this.updateCounterData.bind(this));
+    }
+
+    createCardList(filter) {
+        this.showLoader(true);
         const cardList = document.getElementById("card-list");
+        cardList.innerHTML = "";
 
         var row = ` <div class="row">`;
-        var cont = 0;
-        for (let establishment of data.records) {
+        var columnCount = 0;
+        this.stablishments = {};
+        var establishmentCard = [];
 
-            row = row + this.getEstablishmentCard(establishment);
-            cont++;
-            if (cont === 4) {
-                row = row + "</div>";
-                cardList.innerHTML = cardList.innerHTML + row;
-                cont = 0;
-                row = ` <div class="row">`;
+        for (let establishment of this._data.records) {
+            let nombre = establishment.NOMBRE === null ? '' : establishment.NOMBRE;
+            let contacto = establishment.CONTACTO === null ? '' : establishment.CONTACTO;
+            let direccion = establishment.DIRECCION === null ? '' : establishment.DIRECCION;
+
+            if (!filter ||
+                (filter && (nombre.toLowerCase().indexOf(filter.toLowerCase()) !== -1 ||
+                    direccion.toLowerCase().indexOf(filter.toLowerCase()) !== -1 ||
+                    contacto.toLowerCase().indexOf(filter.toLowerCase()) !== -1
+                ))) {
+                row = row + this.getEstablishmentCard(establishment);
+                columnCount++;
+                establishmentCard.push(establishment);
+
+                if (columnCount === 4) {
+                    columnCount = 0;
+                    row = row + "</div>";
+                    cardList.innerHTML = cardList.innerHTML + row;
+                    row = ` <div class="row">`;
+                }
             }
         }
+
         row = row + "</div>";
         cardList.innerHTML = cardList.innerHTML + row;
 
-        this.toHomeButton();
+        this.setTitle(`${this._town.text} / ${this._category.text}: ${establishmentCard.length} resultados `)
 
-        for (var establishment of data.records) {
+        for (var establishment of establishmentCard) {
             var id = establishment.ID_ESTABLECIMIENTO;
             this.stablishments[id] = establishment;
 
@@ -102,7 +121,13 @@ class EstablishmentListPage extends Page {
             this.setButtonStateChange(`enter_${sessionContext.getEntering()}Btn`, true);
         }
 
-        this.startRefreshInterval(this.updateCounterData.bind(this));
+        this.showLoader(false);
+        return cardList.innerHTML;;
+    }
+
+    setTitle(msg) {
+        const title = document.getElementById("title");
+        title.innerHTML = msg;
     }
 
     registerButtonEvent(nameId, callback) {
@@ -190,13 +215,10 @@ class EstablishmentListPage extends Page {
         let reparto = establishment.REPARTO ? 'Si' : 'No';
         let establishmentId = establishment.ID_ESTABLECIMIENTO;
         let coords = establishment.COORDENADAS;
-        //let mapButton = coords === null ? '' : `<input id="map_${establishmentId}Btn" type="submit" value="Mapa" style="padding:10px 5px;width:50px; ">`;
         let mapButton = coords === null ? '' : `<button id="map_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-map-marked-alt"></i></button>`;
         let phonesLink = this.getPhonesLink(establishment.TELEFONO);
         let contacto = establishment.CONTACTO === null ? '' : establishment.CONTACTO;
 
-
-        // <input id="leave_${establishmentId}Btn" type="submit" value="Salgo" data-id="${establishmentId}" style="padding:10px 5px;width:50px; ">
         return `<div class="column">
                 <div class="card">
                     <label class="title">${establishment.NOMBRE}</label>

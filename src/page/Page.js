@@ -1,7 +1,7 @@
 import home from './HomePage';
 import mapViewer from '../map/MapViewer';
 
-const REFRESH_INTERVAL = 10000;
+const REFRESH_INTERVAL = 60000;
 
 export default class Page {
     constructor() {
