@@ -3,8 +3,8 @@ import Page from './Page';
 import establishmentListPage from './EstablishmentListPage';
 import establishmentFormPage from './EstablishmentFormPage';
 const API_URL = 'https://www.geowe.org/gobuy/service/api.php/records';
-const TOWN_URL = API_URL + '/MUNICIPIOS'
-const CATEGORY_URL = API_URL + '/CATEGORIAS';
+const TOWN_URL = API_URL + '/MUNICIPIOS?order=NOMBRE'
+const CATEGORY_URL = API_URL + '/CATEGORIAS?order=NOMBRE';
 class HomePage extends Page {
 
     constructor() {

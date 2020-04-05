@@ -74,12 +74,15 @@ class EstablishmentListPage extends Page {
         var row = ` <div class="row">`;
         var columnCount = 0;
         this.stablishments = {};
+        this.allStablishments = {};
         var establishmentCard = [];
 
         for (let establishment of this._data.records) {
             let nombre = establishment.NOMBRE === null ? '' : establishment.NOMBRE;
             let contacto = establishment.CONTACTO === null ? '' : establishment.CONTACTO;
             let direccion = establishment.DIRECCION === null ? '' : establishment.DIRECCION;
+
+            this.allStablishments[establishment.ID_ESTABLECIMIENTO] = establishment;
 
             if (!filter ||
                 (filter && (nombre.toLowerCase().indexOf(filter.toLowerCase()) !== -1 ||
@@ -140,12 +143,35 @@ class EstablishmentListPage extends Page {
     }
 
     onOnTheWayClick(id) {
+        this.showLoader(true);
         if (sessionContext.getOnTheWay() != undefined) {
-            alert("Usted ya se encuentra en camino al establecimiento " + this.stablishments[sessionContext.getOnTheWay()].NOMBRE);
+
+            if (sessionContext.getOnTheWay() === id) {
+                let onTheWayId = sessionContext.getOnTheWay();
+
+                fetch(`${decrementURL}id=${onTheWayId}&counter=CONTADOR_LLEGADAS_PREVISTAS`).
+                then((response) => {
+                    this.updateCounterData();
+                    this.setButtonStateChange(`walking_${id}Btn`, false);
+                    sessionContext.clear();
+                    alert("¡Nos vemos pronto!")
+                    this.showLoader(false);
+                }).
+                catch((exception) => { alert("Error al decrementar. " + exception.message) });
+
+                return;
+            }
+
+
+            //alert("Usted ya se encuentra en camino al establecimiento " + this.stablishments[sessionContext.getOnTheWay()].NOMBRE);
+            alert("Usted ya se encuentra en camino al establecimiento " + this.allStablishments[sessionContext.getOnTheWay()].NOMBRE);
+            this.showLoader(false);
             return;
         }
         if (sessionContext.getEntering() != undefined) {
-            alert("Usted ya se encuentra dentro del establecimiento " + this.stablishments[sessionContext.getEntering()].NOMBRE);
+            //alert("Usted ya se encuentra dentro del establecimiento " + this.stablishments[sessionContext.getEntering()].NOMBRE);
+            alert("Usted ya se encuentra dentro del establecimiento " + this.allStablishments[sessionContext.getEntering()].NOMBRE);
+            this.showLoader(false);
             return;
         }
 
@@ -157,17 +183,20 @@ class EstablishmentListPage extends Page {
             alert("Que tenga una buena compra!. Avise cuando llegue.");
             //document.getElementById(`walking_${id}Btn`).style['background-color'] = '#4CAF50';
             this.updateCounterData();
+            this.showLoader(false);
         }).
         catch((exception) => { alert("Error al incrementar") });
     }
 
     onEnterClick(id) {
+        this.showLoader(true);
         if (sessionContext.getOnTheWay() != undefined) {
             let onTheWayId = sessionContext.getOnTheWay();
 
             fetch(`${decrementURL}id=${onTheWayId}&counter=CONTADOR_LLEGADAS_PREVISTAS`).
             then((response) => {
                 this.setButtonStateChange(`walking_${id}Btn`, false);
+                this.showLoader(false);
             }).
             catch((exception) => { alert("Error al decrementar. " + exception.message) });
         }
@@ -179,6 +208,7 @@ class EstablishmentListPage extends Page {
                 this.setButtonStateChange(`enter_${id}Btn`, true);
                 alert("Bienvenido al establecimiento!. Avise cuando salga.");
                 this.updateCounterData();
+                this.showLoader(false);
             }).
             catch((exception) => { alert("Error al incrementar") });
         } else {
