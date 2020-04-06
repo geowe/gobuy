@@ -212,7 +212,7 @@ class EstablishmentListPage extends Page {
             }).
             catch((exception) => { alert("Error al incrementar") });
         } else {
-            alert("Usted ya se encuentra dentro del establecimiento " + this.stablishments[sessionContext.getEntering()].NOMBRE);
+            alert("Usted ya se encuentra dentro del establecimiento " + this.allStablishments[sessionContext.getEntering()].NOMBRE);
         }
     }
 
@@ -220,7 +220,7 @@ class EstablishmentListPage extends Page {
         if (sessionContext.getEntering() == undefined) {
             alert("Usted NO ha entrado a ningún establecimiento");
         } else if (sessionContext.getEntering() != id) {
-            alert("Usted NO ha entrado a este establecimiento. Ha registrado la entrada en " + this.stablishments[sessionContext.getEntering()].NOMBRE);
+            alert("Usted NO ha entrado a este establecimiento. Ha registrado la entrada en " + this.allStablishments[sessionContext.getEntering()].NOMBRE);
         } else {
             fetch(`${decrementURL}id=${id}&counter=CONTADOR_CLIENTES_ACTUALES`).
             then((response) => {
