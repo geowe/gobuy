@@ -245,7 +245,7 @@ class EstablishmentListPage extends Page {
         let reparto = establishment.REPARTO ? 'Si' : 'No';
         let establishmentId = establishment.ID_ESTABLECIMIENTO;
         let coords = establishment.COORDENADAS;
-        let mapButton = coords === null ? '' : `<button id="map_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-map-marked-alt"></i></button>`;
+        let mapButton = coords === null ? '' : `<button id="map_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Ver ubicación en el mapa"><i class="fas fa-map-marked-alt"></i></button>`;
         let phonesLink = this.getPhonesLink(establishment.TELEFONO);
         let contacto = establishment.CONTACTO === null ? '' : establishment.CONTACTO;
 
@@ -260,9 +260,9 @@ class EstablishmentListPage extends Page {
                     <p><i class="fas fa-users"></i> [actuales] <span id="enter_${establishmentId}Count">${establishment.CONTADOR_CLIENTES_ACTUALES}</span></p>
                     <p><i class="fas fa-walking"></i> [en camino] <span id="walking_${establishmentId}Count">${establishment.CONTADOR_LLEGADAS_PREVISTAS}</span></p>
                     <hr>     
-                    <button id="walking_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-walking"></i></button>                                  
-                    <button id="enter_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-user-plus"></i></button>
-                    <button id="leave_${establishmentId}Btn" class="btn" data-id="${establishmentId}" ><i class="fas fa-user-minus"></i></button>                    
+                    <button id="walking_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Voy en camino"><i class="fas fa-walking"></i></button>                                  
+                    <button id="enter_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Estoy en el establecimiento"><i class="fas fa-user-plus"></i></button>
+                    <button id="leave_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Salgo del establecimiento"><i class="fas fa-user-minus"></i></button>                    
                     ${mapButton}
                 </div>
             </div>`;
