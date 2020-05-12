@@ -8,23 +8,40 @@ const WGS84_PROJECTION = 'EPSG:4326';
 class MapViewer {
 
     loadMap(establishment) {
-        var mapModal = document.getElementById("mapModal");
+        const mapModal = document.getElementById("mapModal");
+
         mapModal.style.display = "block";
 
         if (!this._map) {
+
+            this._osmLayer = basemap.getOSM();
+            this._pnoaLayer = basemap.getPNOA();
+            this._pnoaLayer.setVisible(false);
+
             this._map = new ol.Map({
                 target: 'map',
-                layers: [basemap.geIGN()]
+                layers: [this._osmLayer, this._pnoaLayer]
             });
 
             const popupElement = this.createPopup();
             this.initializeEstablishmentLayer(establishment);
             this.closeButtonMapModal(popupElement)
+
+            this.initializeBaseMapControl();
+
         } else {
             this.addEstablishment(establishment);
         }
 
         this.zoomToLayer();
+    }
+
+    initializeBaseMapControl() {
+        const osmRadioButton = document.getElementById("osmRadioButton");
+        const pnoaRadioButton = document.getElementById("pnoaRadioButton");
+
+        osmRadioButton.onchange = this.onchangeBasemap.bind(this, "OSM");
+        pnoaRadioButton.onchange = this.onchangeBasemap.bind(this, "PNOA");
     }
 
     toFeature(establishment) {
@@ -115,7 +132,7 @@ class MapViewer {
     }
 
     getVectorSource() {
-        return this._map.getLayers().item(1).getSource();
+        return this._map.getLayers().item(2).getSource();
     }
 
     getLayerExtent() {
@@ -132,6 +149,16 @@ class MapViewer {
 
     clearMap() {
         this._map = undefined;
+    }
+
+    onchangeBasemap(rasterName) {
+        if ("OSM" === rasterName) {
+            this._osmLayer.setVisible(true);
+            this._pnoaLayer.setVisible(false);
+        } else {
+            this._pnoaLayer.setVisible(true);
+            this._osmLayer.setVisible(false);
+        }
     }
 }
 

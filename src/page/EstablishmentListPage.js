@@ -105,7 +105,7 @@ class EstablishmentListPage extends Page {
         row = row + "</div>";
         cardList.innerHTML = cardList.innerHTML + row;
 
-        this.setTitle(`${this._town.text} / ${this._category.text}: ${establishmentCard.length} resultados `)
+        this.setTitle(`/ ${this._town.text} / ${this._category.text}`, ` ${establishmentCard.length} resultados `)
 
         for (var establishment of establishmentCard) {
             var id = establishment.ID_ESTABLECIMIENTO;
@@ -128,9 +128,11 @@ class EstablishmentListPage extends Page {
         return cardList.innerHTML;;
     }
 
-    setTitle(msg) {
+    setTitle(category, resultCount) {
         const title = document.getElementById("title");
-        title.innerHTML = msg;
+        const result = document.getElementById("result");
+        title.innerHTML = category;
+        result.innerHTML = resultCount;
     }
 
     registerButtonEvent(nameId, callback) {
@@ -248,6 +250,7 @@ class EstablishmentListPage extends Page {
         let mapButton = coords === null ? '' : `<button id="map_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Ver ubicación en el mapa"><i class="fas fa-map-marked-alt"></i></button>`;
         let phonesLink = this.getPhonesLink(establishment.TELEFONO);
         let contacto = establishment.CONTACTO === null ? '' : establishment.CONTACTO;
+        let aforo = establishment.AFORO === "0" ? 'N/A' : establishment.AFORO;
 
         return `<div class="column">
                 <div class="card">
@@ -257,7 +260,8 @@ class EstablishmentListPage extends Page {
                     <p><i class="far fa-clock"></i> ${establishment.HORARIO}</p> 
                     <p><i class="far fa-user-circle"></i> ${contacto}</p>
                     <p><i class="fas fa-truck"></i> ${reparto}</p>
-                    <p><i class="fas fa-users"></i> [actuales] <span id="enter_${establishmentId}Count">${establishment.CONTADOR_CLIENTES_ACTUALES}</span></p>
+                    <p><i class="fas fa-users"></i> [aforo] ${aforo}</p>                    
+                    <p><i class="fas fa-user-friends"></i> [actuales] <span id="enter_${establishmentId}Count">${establishment.CONTADOR_CLIENTES_ACTUALES}</span></p>
                     <p><i class="fas fa-walking"></i> [en camino] <span id="walking_${establishmentId}Count">${establishment.CONTADOR_LLEGADAS_PREVISTAS}</span></p>
                     <hr>     
                     <button id="walking_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Voy en camino"><i class="fas fa-walking"></i></button>                                  
