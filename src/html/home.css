@@ -96,11 +96,10 @@ a:hover {
 }
 
 .space {
-    margin-top: 20px;
+    margin-top: 1em;
     display: flex;
     justify-content: center;
 }
-
 
 /**********SELECT*************/
 
@@ -115,7 +114,7 @@ a:hover {
     width: 50vw;
     max-width: 100%;
     box-sizing: border-box;
-    margin: 0;
+    margin-top: 0.5em;
     border: 1px solid #aaa;
     box-shadow: 0 1px 0 1px rgba(0, 0, 0, .03);
     border-radius: .3em;
@@ -160,8 +159,6 @@ a.button {
     border-radius: 0.12em;
     box-sizing: border-box;
     text-decoration: none;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 300;
     color: #000000;
     text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
     background-color: #FFFFFF;
@@ -171,9 +168,62 @@ a.button {
 
 a.button:hover {
     text-shadow: 0 0 2em rgba(255, 255, 255, 1);
+    color: #d54d7b;
+    border-color: #d54d7b;
+}
+
+button.btn-semi-circle {
+    font-size: 1em;
+    width: 2em;
+    text-align: center;
+    border-radius: 30%;
+    text-align: center;        
+    margin: 0.2em;
+    z-index: 2;
+}
+
+button.btn-semi-circle:hover {
+    text-shadow: 0 0 2em rgba(255, 255, 255, 1);
+    color: #d54d7b;
+    border-color: #d54d7b;
+}
+
+.color-pink{
+    background-color: white;   
+    color:#d54d7b; 
+    border: 0.1em solid #d54d7b;
+}
+
+.color-yellow{
+    background-color: white;   
+    color:#dfdb08; 
+    border: 0.1em solid #dfdb08;
+}
+
+.color-green{
+    background-color: white;   
+    color:#5baa66; 
+    border: 0.1em solid #5baa66;
+}
+
+.color-blue{
+    background-color: white;   
+    color:#3772f1; 
+    border: 0.1em solid #3772f1;
+}
+
+.color-black{
+    background-color: white;   
+    color:black; 
+    border: 0.1em solid black;
+}
+
+a.btn-circle:hover {
+    text-shadow: 0 0 2em rgba(255, 255, 255, 1);
     color: #FFFFFF;
     border-color: #FFFFFF;
 }
+
 
 @media all and (max-width:30em) {
     a.button {
