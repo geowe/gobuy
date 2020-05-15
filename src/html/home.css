@@ -61,9 +61,9 @@ a:hover {
 .text {
     color: #7a7c7f;
     font-size: 14px;
-    font-family: "Libre Baskerville", serif;
+    /*font-family: "Libre Baskerville", serif;*/
     text-shadow: 0 1px 1px #fff;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 .btn {
@@ -133,20 +133,18 @@ a:hover {
 }
 
 .select-css:hover {
-    border-color: #888;
+    border-color: #d54d7b;
+    color: #d54d7b;
 }
 
-.select-css:focus {
-    border-color: #aaa;
-    box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
-    box-shadow: 0 0 0 3px -moz-mac-focusring;
-    color: #222;
-    outline: none;
-}
-
-.select-css option {
-    font-weight: normal;
-}
+.select-items {
+    position: absolute;
+    background-color: DodgerBlue;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+  }
 
 
 /***************************************************/
@@ -156,24 +154,23 @@ a.button {
     padding: 0.46em 1.6em;
     border: 0.1em solid #000000;
     margin: 0 0.2em 0.2em 0;
-    border-radius: 0.12em;
     box-sizing: border-box;
     text-decoration: none;
-    color: #000000;
-    text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
-    background-color: #FFFFFF;
+    color: #FFFFFF;
+    background-color: #d54d7b;
     text-align: center;
     transition: all 0.15s;
 }
 
 a.button:hover {
     text-shadow: 0 0 2em rgba(255, 255, 255, 1);
+    background-color: #FFFFFF;
     color: #d54d7b;
     border-color: #d54d7b;
 }
 
 button.btn-semi-circle {
-    font-size: 1em;
+    font-size: 1.5em;
     width: 2em;
     text-align: center;
     border-radius: 30%;
