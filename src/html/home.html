@@ -1,6 +1,6 @@
 <link rel='stylesheet' href='home.css' type='text/css' media='all' />
 <div class="header text">
-    ¿No encuentras un establecimiento? <button id="addButton" class="btn-green ">¡Añádelo!</button>
+    ¿No encuentras un establecimiento? <button id="addButton" class="btn-green " title="Añade un nuevo establecimiento">¡Añádelo!</button>
 </div>
 
 <div class="row">
@@ -10,7 +10,7 @@
 
     <div class="column middle">
         <div id="logo">
-            <img src="../img/goBuy.png" style="max-width:100%;height:auto;">
+            <img src="../img/goBuy.png" alt="goBuy by geowe" style="max-width:100%;height:auto;">
         </div>
         <div id="municipios">
             <select id="municipiosSelect" class="select-css">
@@ -24,15 +24,15 @@
             
               <a id="searchButton" href="#" class="button">
                 <i id="loader" style="display:none" class="fas fa-spinner fa-spin"></i>
-                  <i id="search-icon" class="fas fa-search">  Buscar</i></a>
+                  <i id="search-icon" class="fas fa-search" title="Busca establecimiento en el municipio seleccionado">  Buscar</i></a>
         </div>
         <div id="buttons" class="space center">
             
             <div style="font-size:1.5em">
                 <!-- TODO <button id="favouriteButton" href="#" class="btn-semi-circle color-yellow" title="Favoritos"><i class="fas fa-bookmark"></i></button>-->
-                <button id="addStoreButton" onClick="window.open('https://geowe.org/gobuy/goBuy-formulario-alta.html', '_blank');" class="btn-semi-circle color-green" title="Añadir nuevo establecimiento"><i class="fas fa-plus"></i></button>
-                <button id="emailButton" onClick="location.href='mailto:info@geowe.org'" class="btn-semi-circle color-black" ><i class="fas fa-envelope"></i></button>
-                <button id="webButton" onClick="location.href='http://gobuy.geowe.org'" class="btn-semi-circle color-blue" ><i class="fas fa-info-circle"></i></button>
+                <button id="addStoreButton" onClick="window.open('https://geowe.org/gobuy/goBuy-formulario-alta.html', '_blank');" class="btn-semi-circle color-green" title="Añade un nuevo establecimiento"><i class="fas fa-plus"></i></button>
+                <button id="emailButton" onClick="location.href='mailto:info@geowe.org'" class="btn-semi-circle color-black" title="Escríbenos un email"><i class="fas fa-envelope"></i></button>
+                <button id="webButton" onClick="location.href='http://gobuy.geowe.org'" class="btn-semi-circle color-blue" title="Visita la Web de goBuy"><i class="fas fa-info-circle"></i></button>
             </div>
         </div>
         
@@ -49,5 +49,5 @@
 
 <div class="footer text ">
     <i class="far fa-envelope"></i> <a href="mailto:info@geowe.org"> info@geowe.org</a>  #YoMeQuedoEnCasa #QuédateEnCasa
-    by <a href="https://www.geowe.org" target="_blank"> #GeoWE <img src="../img/geowe.png" style="max-width:20%;height:auto;"></a>
+    by <a href="https://www.geowe.org" target="_blank" title="Visita la Web de GeoWE"> #GeoWE <img src="../img/geowe.png" style="max-width:20%;height:auto;" alt="GeoWE"></a>
 </div>
