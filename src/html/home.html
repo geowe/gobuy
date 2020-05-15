@@ -9,10 +9,10 @@
     </div>
 
     <div class="column middle">
-        <div id="logo">
+        <div id="logo" class="space center">
             <img src="../img/goBuy.png" alt="goBuy by geowe" style="max-width:100%;height:auto;">
         </div>
-        <div id="municipios">
+        <div id="selection">
             <select id="municipiosSelect" class="select-css">
                   <option value=" " disabled selected>Municipio</option>
             </select>
@@ -21,14 +21,12 @@
             </select>
         </div>
         <div id="buscar" class="space center">
-            
-              <a id="searchButton" href="#" class="button">
+              <a id="searchButton" href="#" class="button" title="Busca establecimiento en el municipio seleccionado">
                 <i id="loader" style="display:none" class="fas fa-spinner fa-spin"></i>
-                  <i id="search-icon" class="fas fa-search" title="Busca establecimiento en el municipio seleccionado">  Buscar</i></a>
+                <i id="search-icon" class="fas fa-search"></i>  Buscar</a>
         </div>
-        <div id="buttons" class="space center">
-            
-            <div style="font-size:1.5em">
+        <div id="buttons" class="space center">            
+            <div>
                 <!-- TODO <button id="favouriteButton" href="#" class="btn-semi-circle color-yellow" title="Favoritos"><i class="fas fa-bookmark"></i></button>-->
                 <button id="addStoreButton" onClick="window.open('https://geowe.org/gobuy/goBuy-formulario-alta.html', '_blank');" class="btn-semi-circle color-green" title="Añade un nuevo establecimiento"><i class="fas fa-plus"></i></button>
                 <button id="emailButton" onClick="location.href='mailto:info@geowe.org'" class="btn-semi-circle color-black" title="Escríbenos un email"><i class="fas fa-envelope"></i></button>
@@ -48,6 +46,6 @@
 </div>
 
 <div class="footer text ">
-    <i class="far fa-envelope"></i> <a href="mailto:info@geowe.org"> info@geowe.org</a>  #YoMeQuedoEnCasa #QuédateEnCasa
-    by <a href="https://www.geowe.org" target="_blank" title="Visita la Web de GeoWE"> #GeoWE <img src="../img/geowe.png" style="max-width:20%;height:auto;" alt="GeoWE"></a>
+    <i class="far fa-envelope"></i> <a href="mailto:info@geowe.org"> info@geowe.org</a>  #compraDeCercanía #compraResponsable
+    by <a href="https://www.geowe.org" target="_blank" title="Visita la Web de GeoWE"> <img src="../img/geowe.png" style="max-width:20%;height:auto;" alt="GeoWE"></a>
 </div>
