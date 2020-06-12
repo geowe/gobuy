@@ -1,6 +1,6 @@
 {
     "name": "gobuy",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "description": "¡Vamos a comprar!. Plataforma que permite conocer el estado de aglomeración existente en un establecimiento.",
     "main": "src/index.js",
     "scripts": {

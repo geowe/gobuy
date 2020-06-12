@@ -74,6 +74,7 @@ a:hover {
     color: #222;
     padding: .4em 1.4em .3em .8em;
     font-size: 14px;
+    margin-top: 5px;
 }
 
 .btn:hover {

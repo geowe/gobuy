@@ -9,7 +9,27 @@ class HomePage extends Page {
 
     constructor() {
         super();
-        this.load();
+        const urlParams = new URLSearchParams(window.location.search);       
+        const id = urlParams.get('establecimiento');        
+        if(id){
+            this.loadEstablishment(id);
+        }else{
+            this.load();
+        }
+        
+    }
+
+    async loadEstablishment(id){
+        
+        const data = await establishmentListPage.getEstablismentData(id);
+    
+        if (data.records.length === 0){
+            alert('No se han encontrado el establecimiento');
+            this.load();
+        }else {
+            establishmentListPage.load(data);        
+            document.getElementById('loader-page').style.display = 'none';
+        } 
     }
 
     async load() {
@@ -37,7 +57,6 @@ class HomePage extends Page {
 
         const addButton = document.getElementById("addButton");
         addButton.onclick = () => {
-            //establishmentFormPage.load();
             var win = window.open('https://geowe.org/gobuy/goBuy-formulario-alta.html', '_blank');
             win.focus();
         }
