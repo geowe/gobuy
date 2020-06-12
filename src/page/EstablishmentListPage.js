@@ -8,9 +8,9 @@ const ESTABLISHMENT_URL = 'https://geowe.org/gobuy/service/api.php/records/ESTAB
 const counterInfoURL = 'https://geowe.org/gobuy/service/api.php/records/ESTABLECIMIENTOS?include=ID_ESTABLECIMIENTO,CONTADOR_CLIENTES_ACTUALES,CONTADOR_LLEGADAS_PREVISTAS&';
 const incrementURL = proxy + 'https://geowe.org/gobuy/service/inc_counter.php?';
 const decrementURL = proxy + 'https://geowe.org/gobuy/service/dec_counter.php?';
-// const ESTABLISHMENT_URL = 'http://localhost/php-crud/api.php/records/establecimientos?';
-// const incrementURL = 'http://localhost/php-crud/inc_counter.php?';
-// const decrementURL = 'http://localhost/php-crud/dec_counter.php?';
+const TOWNS_URL = 'https://geowe.org/gobuy/service/api.php/records/MUNICIPIOS?';
+const CATEGORIES_URL = 'https://geowe.org/gobuy/service/api.php/records/CATEGORIAS?';
+const ESTABLISMENT_LINK ='https://geowe.org/gobuy/web/?establecimiento=';
 
 class EstablishmentListPage extends Page {
     constructor() {
@@ -29,9 +29,38 @@ class EstablishmentListPage extends Page {
         return await response.json();
     }
 
+    async getEstablismentData(id) {
+        const response = await fetch(`${ESTABLISHMENT_URL}filter=ID_ESTABLECIMIENTO,eq,${id}`);
+        let json = await response.json();  
+        let establecimiento = json.records[0];
+        
+        this._town = await this.getMunicipio(establecimiento.ID_MUNICIPIO);
+        
+        this._category = await this.getCategoria(establecimiento.ID_CATEGORIA);
+        
+        return json;
+    }
+
+    async getMunicipio(id){
+        let municipio = await fetch(`${TOWNS_URL}filter=ID_MUNICIPIO,eq,${id}`);
+        let mun = await municipio.json();
+        return {
+            text: mun.records[0].NOMBRE,
+            value: mun.records[0].ID_MUNICIPIO
+        };
+    }
+
+    async getCategoria(id){
+        let categoria = await fetch(`${CATEGORIES_URL}filter=ID_CATEGORIA,eq,${id}`);
+        let cat = await categoria.json();
+        console.log(cat);
+        return {
+            text: cat.records[0].NOMBRE,
+            value: cat.records[0].ID_CATEGORIA
+        };
+    }
+
     updateCounterData() {
-        //alert("actualiza")
-        // console.log("Actualizando contadores...");
         this.showLoader(true);
 
         this.getCounterData().
@@ -116,6 +145,7 @@ class EstablishmentListPage extends Page {
             this.registerButtonEvent(`enter_${id}Btn`, this.onEnterClick.bind(this));
             this.registerButtonEvent(`leave_${id}Btn`, this.onLeaveClick.bind(this));
             this.registerButtonEvent(`map_${id}Btn`, () => { this.onMapClick(obj); });
+            this.registerButtonEvent(`share_${id}Btn`, () => { this.onShareClick(obj); });
         }
 
         if (sessionContext.getOnTheWay() != undefined) {
@@ -164,21 +194,18 @@ class EstablishmentListPage extends Page {
                 return;
             }
 
-
-            //alert("Usted ya se encuentra en camino al establecimiento " + this.stablishments[sessionContext.getOnTheWay()].NOMBRE);
             alert("Usted ya se encuentra en camino al establecimiento " + this.allStablishments[sessionContext.getOnTheWay()].NOMBRE);
             this.showLoader(false);
             return;
         }
-        if (sessionContext.getEntering() != undefined) {
-            //alert("Usted ya se encuentra dentro del establecimiento " + this.stablishments[sessionContext.getEntering()].NOMBRE);
+        if (sessionContext.getEntering() != undefined) {            
             alert("Usted ya se encuentra dentro del establecimiento " + this.allStablishments[sessionContext.getEntering()].NOMBRE);
             this.showLoader(false);
             return;
         }
 
         fetch(`${incrementURL}id=${id}&counter=CONTADOR_LLEGADAS_PREVISTAS`).
-            //fetch(url).
+        
         then((response) => {
             sessionContext.setOnTheWay(id);
             this.setButtonStateChange(`walking_${id}Btn`, true);
@@ -243,6 +270,22 @@ class EstablishmentListPage extends Page {
         mapViewer.loadMap(establishment);
     }
 
+    onShareClick(obj){
+        var establishment = obj.establishment;
+        var input = document.createElement("input");        
+        let link = ESTABLISMENT_LINK+establishment.ID_ESTABLECIMIENTO;
+        input.value = link;
+        
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("copy");
+        alert('El enlace al establecimiento:\n\n'
+            +link+'\n\nSe ha copiado al portapapeles'
+            +'\n¡Compártelo!');
+
+        document.body.removeChild(input);
+    }
+
     getEstablishmentCard(establishment) {
         let reparto = establishment.REPARTO ? 'Si' : 'No';
         let establishmentId = establishment.ID_ESTABLECIMIENTO;
@@ -267,6 +310,7 @@ class EstablishmentListPage extends Page {
                     <button id="walking_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Voy en camino"><i class="fas fa-walking"></i></button>                                  
                     <button id="enter_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Estoy en el establecimiento"><i class="fas fa-user-plus"></i></button>
                     <button id="leave_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Salgo del establecimiento"><i class="fas fa-user-minus"></i></button>                    
+                    <button id="share_${establishmentId}Btn" class="btn" data-id="${establishmentId}" title="Compartir enlace del establecimiento"><i class="fas fa-share"></i></button>                    
                     ${mapButton}
                 </div>
             </div>`;
